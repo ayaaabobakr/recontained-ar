@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "741157177734",
+    "firebase_url": "https://ar-project-3d092.firebaseio.com",
+    "project_id": "ar-project-3d092",
+    "storage_bucket": "ar-project-3d092.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741157177734:android:91767bec4045df6815c407",
+        "android_client_info": {
+          "package_name": "com.company.ARCoreExample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741157177734-3smnpq1dl35arfjtnn055sj2u7vr7so7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_4K-OyKfAW4LxKatnp8l0BVLiCvplRnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741157177734-3smnpq1dl35arfjtnn055sj2u7vr7so7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

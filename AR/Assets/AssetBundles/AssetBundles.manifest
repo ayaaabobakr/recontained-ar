@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 2874227463
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: wood table
+      Dependencies: {}
+    Info_1:
+      Name: bed
+      Dependencies: {}
