@@ -111,7 +111,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
                     var gameObject = Instantiate(PawnPrefab, pos.position, pos.rotation);
                     gameObject.transform.position += new Vector3(0, gameObject.transform.localScale.y / 2, 0);
-                    
 
                     // Instantiate manipulator.
                     var manipulator =

@@ -11,23 +11,21 @@ public class AddObject : MonoBehaviour
     public GameObject ObjectGenerator;
     public GameObject closePanel;
     PawnManipulator manipulator;
-    
+
+    panelManager panelManager;
+
     void Start()
     {
         manipulator = ObjectGenerator.GetComponent<PawnManipulator>();
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
 
     }
 
     public void viewInSpace()
     {
+        panelManager.closeAll();
         manipulator.chosenPrefab = true;
         manipulator.PawnPrefab = prefab;
-        closePanel.GetComponent<openPanel>().OpenPanel();
+        // closePanel.GetComponent<openPanel>().OpenPanel();
     }
 }

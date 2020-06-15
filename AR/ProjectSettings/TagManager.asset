@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Item
+  - ManipulationSystem
+  - DetailsMenu
+  - ItemPhoto
   layers:
   - Default
   - TransparentFX
