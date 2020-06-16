@@ -129,6 +129,7 @@ public class panelManager : MonoBehaviour
                 Debug.Log("case Details menu");
                 currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
                 productImage.GetComponent<Image>().sprite = p.image;
+                currPanel.GetComponentInChildren<AddObject>().prefab = p.prefab;
 
                 break;
         }

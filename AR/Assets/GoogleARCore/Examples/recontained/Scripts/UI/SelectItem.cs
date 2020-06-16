@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Firebase.Extensions;
 using Firebase.Firestore;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class SelectItem : MonoBehaviour
@@ -73,7 +72,7 @@ public class SelectItem : MonoBehaviour
         icon.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
 
         Product p = icon.AddComponent<Product>() as Product;
-        
+
         icon.GetComponent<Button>().onClick.AddListener(() =>
           {
               panelManager.currPanel = DetailMenu;
@@ -82,12 +81,13 @@ public class SelectItem : MonoBehaviour
           });
 
         yield return p.createProduct(name, 1, imgURL, prefabURL);
+        // yield return p.createProduct(product);
 
-        
+
         icon.GetComponent<Image>().sprite = p.getImage();
         item = p.getPrefab();
 
-        
+
 
         AddObject addObj = icon.AddComponent<AddObject>();
         addObj.closePanel = closePanel;

@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
+using System.Collections.Generic;
+
 
 public class Product : MonoBehaviour
 {
@@ -10,28 +10,45 @@ public class Product : MonoBehaviour
     public int categoryID { get; set; }
     public GameObject prefab;
     public Sprite image;
-
-    // public Product(string pName)
-    // {
-    //     this.pName = pName;
-    //     this.image = Resources.Load<Sprite>("img1") as Sprite;
-    // }
-
-    // public Product(string pName, int categoryID)
-    // {
-    //     this.pName = pName;
-    //     this.categoryID = categoryID;
-    //     this.image = Resources.Load<Sprite>("img1") as Sprite;
-    // }
+    public string color;
+    private string[] colors;
+    private Dictionary<string, string> imageMap;
+    private Dictionary<string, string> prefabMap;
+    private Dictionary<string, string> colorMap;
 
     public IEnumerator createProduct(string pName, int categoryID, string imgUrl, string prefabUrl)
     {
         this.pName = pName;
         this.categoryID = categoryID;
         this.image = Resources.Load<Sprite>("img1") as Sprite;
+
         yield return StartCoroutine(setImage(imgUrl));
         yield return StartCoroutine(setPrefab(prefabUrl));
     }
+
+    public IEnumerator createProduct(Dictionary<string, object> product)
+    {
+        this.pName = product["name"].ToString();
+        this.categoryID = (int)product["categoryID"];
+        this.colors = (string[])product["colors"];
+        this.colorMap = (Dictionary<string, string>)product["colorMap"];
+        this.imageMap = (Dictionary<string, string>)product["imageMap"];
+        this.prefabMap = (Dictionary<string, string>)product["prefabMap"];
+        this.color = this.colors[0];
+        this.image = Resources.Load<Sprite>("img1") as Sprite;
+
+        yield return changeColor(this.color);
+    }
+
+    public IEnumerator changeColor(string color)
+    {
+        string imageUrl = imageMap[color];
+        string prefabUrl = prefabMap[color];
+
+        yield return StartCoroutine(setImage(imageUrl));
+        yield return StartCoroutine(setPrefab(prefabUrl));
+    }
+
     public IEnumerator setImage(string url)
     {
         Debug.Log("trying to get the image");
@@ -49,8 +66,8 @@ public class Product : MonoBehaviour
         {
             Debug.Log("www.error");
         }
-
     }
+
     public Sprite getImage()
     {
         return image;
@@ -58,9 +75,7 @@ public class Product : MonoBehaviour
 
     public IEnumerator setPrefab(string url)
     {
-        Debug.Log("trying to get the prefab");
         WWW www = new WWW(url);
-        Debug.Log("I'm here");
         yield return www;
         AssetBundle bundle = www.assetBundle;
         if (www.error == null)
@@ -71,8 +86,6 @@ public class Product : MonoBehaviour
             {
                 this.prefab.AddComponent<BoxCollider>();
             }
-
-            // addObj.prefab = prefab;
         }
         else
         {
@@ -80,11 +93,25 @@ public class Product : MonoBehaviour
         }
 
     }
+
     public GameObject getPrefab()
     {
         return this.prefab;
     }
 
+
+
+    public Sprite[] getColorImages()
+    {
+        int numOfColors = this.colors.Length;
+        Sprite[] colorImages = new Sprite[numOfColors];
+        for (int i = 0; i < numOfColors; ++i)
+        {
+            string url = this.colorMap[this.colors[i]];
+            // colorImages[i] = StartCoroutine(setImage(url)) as Sprite;
+        }
+        return new Sprite[1];
+    }
 
 
 }
