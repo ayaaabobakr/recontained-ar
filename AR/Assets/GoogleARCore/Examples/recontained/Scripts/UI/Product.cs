@@ -11,10 +11,19 @@ public class Product : MonoBehaviour
     public GameObject prefab;
     public Sprite image;
     public string color;
+    public Sprite[] colorImages;
     private string[] colors;
     private Dictionary<string, string> imageMap;
     private Dictionary<string, string> prefabMap;
     private Dictionary<string, string> colorMap;
+
+    private void Start()
+    {
+        colorMap = new Dictionary<string, string>();
+        colors = new string[1];
+        colors[0] = "silver";
+        colorMap.Add("silver", "https://firebasestorage.googleapis.com/v0/b/ar-project-3d092.appspot.com/o/images%2Fsalon%20table.png?alt=media&token=97686c12-b9f8-4225-8741-612936c21651");
+    }
 
     public IEnumerator createProduct(string pName, int categoryID, string imgUrl, string prefabUrl)
     {
@@ -60,6 +69,7 @@ public class Product : MonoBehaviour
         {
             Texture2D t = texDl.texture;
             this.image = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
+
             Debug.Log("image is Loaded");
         }
         else
@@ -99,19 +109,31 @@ public class Product : MonoBehaviour
         return this.prefab;
     }
 
-
-
-    public Sprite[] getColorImages()
+    public IEnumerator getColorImages()
     {
         int numOfColors = this.colors.Length;
-        Sprite[] colorImages = new Sprite[numOfColors];
+        colorImages = new Sprite[numOfColors];
         for (int i = 0; i < numOfColors; ++i)
         {
             string url = this.colorMap[this.colors[i]];
-            // colorImages[i] = StartCoroutine(setImage(url)) as Sprite;
-        }
-        return new Sprite[1];
-    }
+            Debug.Log("trying to get the color image");
+            UnityWebRequest wr = new UnityWebRequest(url);
+            DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
+            wr.downloadHandler = texDl;
+            yield return wr.SendWebRequest();
+            if (!(wr.isNetworkError || wr.isHttpError))
+            {
+                Texture2D t = texDl.texture;
+                colorImages[i] = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
 
+                Debug.Log("color image is Loaded");
+            }
+            else
+            {
+                Debug.Log("www.error");
+            }
+
+        }
+    }
 
 }

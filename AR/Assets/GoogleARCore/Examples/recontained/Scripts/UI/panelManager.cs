@@ -5,13 +5,17 @@ using UnityEngine.UI;
 
 public class panelManager : MonoBehaviour
 {
-    Stack<GameObject> panelStack;
+
     public GameObject currPanel { get; set; }
     public GameObject mainPanel;
-    Vector3 panelLocation;
-    Vector3 upLocation;
-    float delta;
+    public GameObject colorPanel;
     public GameObject productImage;
+    private Vector3 panelLocation;
+    private Vector3 upLocation;
+    private Stack<GameObject> panelStack;
+    private float delta;
+
+
 
 
     private void Start()
@@ -130,8 +134,22 @@ public class panelManager : MonoBehaviour
                 currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
                 productImage.GetComponent<Image>().sprite = p.image;
                 currPanel.GetComponentInChildren<AddObject>().prefab = p.prefab;
-
+                StartCoroutine(setColor(p));
                 break;
+        }
+    }
+    public IEnumerator setColor(Product p)
+    {
+        Debug.Log("I'm setting color");
+        yield return StartCoroutine(p.getColorImages());
+        Sprite[] images = p.colorImages;
+        for (int i = 0; i < images.Length; ++i)
+        {
+            GameObject color = new GameObject();
+            Image colorImage = color.AddComponent<Image>();
+            colorImage.sprite = images[i];
+            colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
+
         }
     }
 }
