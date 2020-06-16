@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44300598, g: 0.4921947, b: 0.5719239, a: 1}
+  m_IndirectSpecularColor: {r: 0.44300616, g: 0.49219513, b: 0.5719244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4220,7 +4220,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: aefd8a94a6f5a0144b313048578348e8, type: 3}
+  m_Texture: {fileID: 2800000, guid: 491a7a1401a3d854294e05d16655ebac, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -8244,7 +8244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c73a8f6fa77d28428c965a9ac7a1a9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1329661234735324725, guid: 95b33989e88004349997b5e667b701d0, type: 3}
+  prefab: {fileID: 1592745755956598038, guid: 59a909e6abdae4a438900bbb13b0ef0c, type: 3}
   ObjectGenerator: {fileID: 1812720041}
   closePanel: {fileID: 1357223506}
 --- !u!114 &1887531477
