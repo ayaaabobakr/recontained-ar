@@ -4,32 +4,30 @@ using Firebase.Extensions;
 using Firebase.Firestore;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class SelectItem : MonoBehaviour
 {
-
     public GameObject button;
     public GameObject thisCanvas;
     public GameObject panel;
     private RectTransform panelDimensions;
-    Rect buttonDimensions;
-    FirebaseFirestore db;
-    private Vector2 newScale;
-    GameObject item;
     public GameObject ObjectGenerator;
     public GameObject closePanel;
-    panelManager panelManager;
     public GameObject DetailMenu;
+    private panelManager panelManager;
+    private Vector2 newScale;
+    Rect buttonDimensions;
+    FirebaseFirestore db;
+    GameObject item;
 
     void Start()
     {
-        Debug.Log("Start SelectItem");
         panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
         panelDimensions = panel.GetComponent<RectTransform>();
         buttonDimensions = button.GetComponent<RectTransform>().rect;
         db = FirebaseFirestore.DefaultInstance;
         loadButton();
-
     }
 
     void SetUpGrid(GameObject panel, int item_num)
@@ -43,26 +41,24 @@ public class SelectItem : MonoBehaviour
 
     public void loadButton()
     {
-        Query products = db.Collection("Products");
+        Query products = db.Collection("Products").Limit(3);
+
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            Debug.Log("loading Products");
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
-            Debug.Log(allcategoriesQuerySnapshot.Count);
             SetUpGrid(panel, allcategoriesQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
-
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
                 StartCoroutine(createButton(product));
             }
         });
+
     }
+
     public IEnumerator createButton(Dictionary<string, object> product)
     {
         var name = product["name"].ToString();
-        var imgURL = product["imgURL"].ToString();
-        var prefabURL = product["prefabURL"].ToString();
 
         GameObject icon = Instantiate(button) as GameObject;
         icon.GetComponent<Image>().sprite = Resources.Load<Sprite>("img1") as Sprite;
@@ -71,28 +67,20 @@ public class SelectItem : MonoBehaviour
         icon.name = name;
         icon.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
 
-        Product p = icon.AddComponent<Product>() as Product;
+        GameObject emptyProduct = new GameObject();
+        Product p = emptyProduct.AddComponent<Product>() as Product;
+        p.createProduct(product);
 
         icon.GetComponent<Button>().onClick.AddListener(() =>
-          {
-              panelManager.currPanel = DetailMenu;
-              panelManager.setData(p);
-              panelManager.openPanel();
-          });
+           {
+               panelManager.currPanel = DetailMenu;
+               panelManager.openPanel();
+               panelManager.setData(p);
+           });
 
-        yield return p.createProduct(name, 1, imgURL, prefabURL);
-        // yield return p.createProduct(product);
+        yield return StartCoroutine(p.setImageByColor(p.color));
 
-
-        icon.GetComponent<Image>().sprite = p.getImage();
-        item = p.getPrefab();
-
-
-
-        AddObject addObj = icon.AddComponent<AddObject>();
-        addObj.closePanel = closePanel;
-        addObj.ObjectGenerator = ObjectGenerator;
-        addObj.prefab = item;
+        icon.GetComponent<Image>().sprite = p.getImageByColor(p.color);
 
     }
 

@@ -15,9 +15,6 @@ public class panelManager : MonoBehaviour
     private Stack<GameObject> panelStack;
     private float delta;
 
-
-
-
     private void Start()
     {
         Debug.Log("Start panelManager");
@@ -131,25 +128,18 @@ public class panelManager : MonoBehaviour
                 break;
             case "DetailsMenu":
                 Debug.Log("case Details menu");
-                currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
-                productImage.GetComponent<Image>().sprite = p.image;
-                currPanel.GetComponentInChildren<AddObject>().prefab = p.prefab;
-                StartCoroutine(setColor(p));
+
+                StartCoroutine(currPanel.GetComponent<DetailsMenu>().Loadpage(p));
+                
+                // currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
+                // currPanel.AddComponent<Product>();
+                // productImage.GetComponent<Image>().sprite = p.image;
+                // currPanel.GetComponentInChildren<AddObject>().prefab = p.prefab;
+                // p.getColors();
+                // Debug.Log("I'm back from getColors awiat");
+                // setColor(p);
                 break;
         }
     }
-    public IEnumerator setColor(Product p)
-    {
-        Debug.Log("I'm setting color");
-        yield return StartCoroutine(p.getColorImages());
-        Sprite[] images = p.colorImages;
-        for (int i = 0; i < images.Length; ++i)
-        {
-            GameObject color = new GameObject();
-            Image colorImage = color.AddComponent<Image>();
-            colorImage.sprite = images[i];
-            colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
 
-        }
-    }
 }

@@ -8,6 +8,7 @@ TagManager:
   - ManipulationSystem
   - DetailsMenu
   - ItemPhoto
+  - colorPanel
   layers:
   - Default
   - TransparentFX
