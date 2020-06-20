@@ -21,12 +21,15 @@ public class SelectItem : MonoBehaviour
     FirebaseFirestore db;
     GameObject item;
 
+    bool isloading = true;
+
     void Start()
     {
         panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
         panelDimensions = panel.GetComponent<RectTransform>();
         buttonDimensions = button.GetComponent<RectTransform>().rect;
         db = FirebaseFirestore.DefaultInstance;
+        // StartCoroutine(loading());
         loadButton();
     }
 
@@ -39,6 +42,17 @@ public class SelectItem : MonoBehaviour
         panelDimensions.sizeDelta = newScale;
     }
 
+    // public IEnumerator loading()
+    // {
+
+    //     while (isloading)
+    //     {
+    //         Debug.Log("I'm loading");
+    //     }
+    //     Debug.Log("I'm Done loading");
+    //     yield return 1;
+    // }
+
     public void loadButton()
     {
         Query products = db.Collection("Products").Limit(3);
@@ -46,6 +60,10 @@ public class SelectItem : MonoBehaviour
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
+            // if (task.IsCompleted)
+            // {
+            //     isloading = false;
+            // }
             SetUpGrid(panel, allcategoriesQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
@@ -61,7 +79,7 @@ public class SelectItem : MonoBehaviour
         var name = product["name"].ToString();
 
         GameObject icon = Instantiate(button) as GameObject;
-        icon.GetComponent<Image>().sprite = Resources.Load<Sprite>("img1") as Sprite;
+        icon.GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("img1") as Sprite;
         icon.transform.SetParent(thisCanvas.transform, false);
         icon.transform.SetParent(panel.transform);
         icon.name = name;
@@ -80,7 +98,7 @@ public class SelectItem : MonoBehaviour
 
         yield return StartCoroutine(p.setImageByColor(p.color));
 
-        icon.GetComponent<Image>().sprite = p.getImageByColor(p.color);
+        icon.GetComponentsInChildren<Image>()[1].sprite = p.getImageByColor(p.color);
 
     }
 

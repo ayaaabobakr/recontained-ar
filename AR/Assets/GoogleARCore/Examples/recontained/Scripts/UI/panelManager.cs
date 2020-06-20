@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class panelManager : MonoBehaviour
 {
@@ -67,6 +68,20 @@ public class panelManager : MonoBehaviour
         StartCoroutine(openAnimation());
 
     }
+    public void openPanel(Task task)
+    {
+        if (panelStack.Count != 0)
+        {
+            Debug.Log("PanelStack is not empty");
+            panelStack.Peek().SetActive(false);
+        }
+        
+        panelStack.Push(currPanel);
+        currPanel.SetActive(true);
+        StartCoroutine(openAnimation());
+
+    }
+
     void closePanel()
     {
         currPanel.SetActive(false);
@@ -130,7 +145,7 @@ public class panelManager : MonoBehaviour
                 Debug.Log("case Details menu");
 
                 StartCoroutine(currPanel.GetComponent<DetailsMenu>().Loadpage(p));
-                
+
                 // currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
                 // currPanel.AddComponent<Product>();
                 // productImage.GetComponent<Image>().sprite = p.image;
