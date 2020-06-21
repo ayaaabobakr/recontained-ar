@@ -18,6 +18,7 @@ public class Product : MonoBehaviour
     public string color;
     public GameObject colorPanel;
     public string imageUrl;
+    public string prefabUrl;
     public Sprite[] colorImages;
     private Dictionary<string, Sprite> imageMap;
     private Dictionary<string, GameObject> prefabMap;
@@ -31,8 +32,6 @@ public class Product : MonoBehaviour
     private void Start()
     {
         db = FirebaseFirestore.DefaultInstance;
-
-        // prefabMap = new Dictionary<string, string>();
     }
 
     public void createProduct(Dictionary<string, object> product)
@@ -40,6 +39,7 @@ public class Product : MonoBehaviour
         this.pName = product["name"].ToString();
         this.color = product["color"].ToString();
         this.imageUrl = product["imageUrl"].ToString();
+        this.prefabUrl = product["prefabUrl"].ToString();
         this.categoryID = int.Parse(product["categoryID"].ToString());
         this.productID = int.Parse(product["ID"].ToString());
         this.colorUrlMap = new Dictionary<string, string>();
@@ -48,6 +48,7 @@ public class Product : MonoBehaviour
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
         this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.prefabUrlMap.Add(this.color, this.prefabUrl);
 
     }
 
@@ -80,7 +81,11 @@ public class Product : MonoBehaviour
 
         if (this.prefabMap.ContainsKey(colorName)) { yield break; }
 
-        if (!prefabUrlMap.ContainsKey(colorName)) { yield break; }
+        if (!prefabUrlMap.ContainsKey(colorName))
+        {
+            Debug.Log("the prefab url is not here");
+            yield break;
+        }
 
         string url = this.prefabUrlMap[colorName];
         WWW www = new WWW(url);

@@ -55,6 +55,7 @@ public class ProductLayout : MonoBehaviour
     }
     public void setProduct()
     {
+        clearProducts();
         numOfProduct = data.Count;
         setUpGrid();
         Debug.Log("I am in set Product");
@@ -95,5 +96,15 @@ public class ProductLayout : MonoBehaviour
 
         icon.GetComponentsInChildren<Image>()[1].sprite = p.getImageByColor(p.color);
 
+    }
+
+    public void clearProducts()
+    {
+        var products = panel.GetComponentsInChildren<Button>();
+        foreach (var product in products)
+        {
+            Destroy(product.gameObject);
+        }
+       
     }
 }

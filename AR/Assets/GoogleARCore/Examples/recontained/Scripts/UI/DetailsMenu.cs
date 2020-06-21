@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class DetailsMenu : MonoBehaviour
 {
-    public Product product;
     public GameObject panel;
+    public Product product;
     public GameObject image;
     public GameObject colorPanel;
     public GameObject ViewInSpace;
 
     public IEnumerator Loadpage(Product product)
     {
+        clearPanel();
         this.product = product;
         this.product.colorPanel = colorPanel;
         this.product.DetailsMenu = panel;
@@ -20,7 +21,7 @@ public class DetailsMenu : MonoBehaviour
         AddObject addObj = ViewInSpace.GetComponent<AddObject>();
         Debug.Log("i will put the product in the addobject component");
         addObj.product = product;
-       
+
         panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.pName;
         string color = this.product.color;
 
@@ -71,6 +72,18 @@ public class DetailsMenu : MonoBehaviour
                     Debug.Log(colorBtn.name);
                 });
 
+        }
+    }
+
+    public void clearPanel()
+    {
+        Debug.Log("clearDetailsPanel");
+        product = null;
+        image.GetComponent<Image>().sprite = Resources.Load<Sprite>("img1") as Sprite;
+        var colors = colorPanel.GetComponentsInChildren<Image>();
+        for (int i = 1; i < colors.Length; ++i)
+        {
+            Destroy(colors[i].gameObject);
         }
     }
 }

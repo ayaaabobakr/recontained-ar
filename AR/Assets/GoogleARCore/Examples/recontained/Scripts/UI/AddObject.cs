@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GoogleARCore.Examples.ObjectManipulation;
+using UnityEngine.UI;
 
 public class AddObject : MonoBehaviour
 {
@@ -19,9 +20,23 @@ public class AddObject : MonoBehaviour
 
     public void viewInSpace()
     {
-        manipulator.chosenPrefab = true;
+        // Debug.Log("I'am in ViewInSpace");
+        // gameObject.GetComponent<Button>().interactable = false;
         // yield return StartCoroutine(this.product.setPrefabByColor(this.product.color));
+        // manipulator.PawnPrefab = this.product.getPrefabByColor(this.product.color);
+        // manipulator.chosenPrefab = true;
+        // // gameObject.GetComponent<Button>().interactable = true;
+        // panelManager.closeAll();
+        StartCoroutine(test());
+    }
+    public IEnumerator test()
+    {
+        Debug.Log("I'am in ViewInSpace");
+        gameObject.GetComponent<Button>().interactable = false;
+        yield return StartCoroutine(this.product.setPrefabByColor(this.product.color));
+        manipulator.chosenPrefab = true;
         manipulator.PawnPrefab = this.product.getPrefabByColor(this.product.color);
+        gameObject.GetComponent<Button>().interactable = true;
         panelManager.closeAll();
     }
 }

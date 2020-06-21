@@ -82,7 +82,7 @@ public class panelManager : MonoBehaviour
 
     }
 
-    void closePanel()
+    public void closePanel()
     {
         currPanel.SetActive(false);
         panelStack.Pop();
