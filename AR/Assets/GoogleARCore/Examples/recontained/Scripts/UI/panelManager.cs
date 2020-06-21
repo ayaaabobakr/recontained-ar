@@ -63,25 +63,13 @@ public class panelManager : MonoBehaviour
             Debug.Log("PanelStack is not empty");
             panelStack.Peek().SetActive(false);
         }
+        Load();
         panelStack.Push(currPanel);
         currPanel.SetActive(true);
         StartCoroutine(openAnimation());
-
-    }
-    public void openPanel(Task task)
-    {
-        if (panelStack.Count != 0)
-        {
-            Debug.Log("PanelStack is not empty");
-            panelStack.Peek().SetActive(false);
-        }
         
-        panelStack.Push(currPanel);
-        currPanel.SetActive(true);
-        StartCoroutine(openAnimation());
 
     }
-
     public void closePanel()
     {
         currPanel.SetActive(false);
@@ -157,4 +145,26 @@ public class panelManager : MonoBehaviour
         }
     }
 
+    public void Load()
+    {
+        Toggle[] toggles = currPanel.GetComponentsInChildren<Toggle>();
+        if (currPanel == mainPanel)
+        {
+            Debug.Log("the number of toggles are " + toggles.Length + " and the current panel is mainPanel");
+        }
+        else
+        {
+            Debug.Log("the number of toggles are " + toggles.Length + " and the current panel is categoryPanel");
+        }
+
+        foreach (Toggle toggle in toggles)
+        {
+            if (toggle.isOn)
+            {
+                Product product = toggle.GetComponent<Product>();
+                StartCoroutine(product.setImageByColor(product.mainColor));
+            }
+
+        }
+    }
 }

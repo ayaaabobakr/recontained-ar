@@ -72,30 +72,36 @@ public class ProductLayout : MonoBehaviour
     {
 
         var name = product["name"].ToString();
-        Debug.Log("Product Card" + name);
-        GameObject icon = Instantiate(productBtn) as GameObject;
-        Debug.Log("Product Card" + name);
-        icon.GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("img1") as Sprite;
-        icon.transform.SetParent(canvas.transform, false);
-        icon.transform.SetParent(panel.transform);
-        icon.name = name;
-        icon.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
+        GameObject card = Instantiate(productBtn) as GameObject;
+        Sprite cardImage = card.GetComponentsInChildren<Image>()[1].sprite;
+        cardImage = Resources.Load<Sprite>("img1") as Sprite;
+        card.transform.SetParent(canvas.transform, false);
+        card.transform.SetParent(panel.transform);
+        card.name = name;
+        card.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
 
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
-        p.createProduct(product);
+        if (panelManager == null)
+        {
+            Debug.Log("panelManager is null");
+            panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
+        }
+        p.transform.SetParent(panelManager.currPanel.transform);
+        p.createProduct(product, card);
 
-        icon.GetComponent<Button>().onClick.AddListener(() =>
+        card.GetComponent<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
+               GameObject selectProduct = new GameObject();
+               Product pp = selectProduct.AddComponent<Product>();
+               pp.createProduct(product);
+               pp.transform.SetParent(panelManager.currPanel.transform);
                panelManager.openPanel();
-               panelManager.setData(p);
+               panelManager.setData(pp);
            });
 
         yield return StartCoroutine(p.setImageByColor(p.color));
-
-        icon.GetComponentsInChildren<Image>()[1].sprite = p.getImageByColor(p.color);
-
     }
 
     public void clearProducts()
@@ -105,6 +111,6 @@ public class ProductLayout : MonoBehaviour
         {
             Destroy(product.gameObject);
         }
-       
+
     }
 }

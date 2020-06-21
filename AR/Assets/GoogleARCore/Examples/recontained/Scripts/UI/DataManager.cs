@@ -30,10 +30,11 @@ public class DataManager : MonoBehaviour
             {
                 Debug.Log("task.Result.Count" + task.Result.Count);
                 Debug.Log("is completed");
+                categoryPanel.GetComponent<ProductLayout>().data = task.Result;
                 panelManager.setPanel(categoryPanel);
                 panelManager.openPanel();
-                categoryPanel.GetComponent<ProductLayout>().data = task.Result;
                 categoryPanel.GetComponent<ProductLayout>().setProduct();
+
 
             }
             else if (task.IsCanceled || task.IsFaulted)

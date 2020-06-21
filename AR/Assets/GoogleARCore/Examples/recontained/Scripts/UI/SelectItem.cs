@@ -42,17 +42,6 @@ public class SelectItem : MonoBehaviour
         panelDimensions.sizeDelta = newScale;
     }
 
-    // public IEnumerator loading()
-    // {
-
-    //     while (isloading)
-    //     {
-    //         Debug.Log("I'm loading");
-    //     }
-    //     Debug.Log("I'm Done loading");
-    //     yield return 1;
-    // }
-
     public void loadButton()
     {
         Query products = db.Collection("Products").Limit(3);
@@ -60,10 +49,6 @@ public class SelectItem : MonoBehaviour
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
-            // if (task.IsCompleted)
-            // {
-            //     isloading = false;
-            // }
             SetUpGrid(panel, allcategoriesQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
@@ -78,27 +63,35 @@ public class SelectItem : MonoBehaviour
     {
         var name = product["name"].ToString();
 
-        GameObject icon = Instantiate(button) as GameObject;
-        icon.GetComponentsInChildren<Image>()[1].sprite = Resources.Load<Sprite>("img1") as Sprite;
-        icon.transform.SetParent(thisCanvas.transform, false);
-        icon.transform.SetParent(panel.transform);
-        icon.name = name;
-        icon.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
+        GameObject card = Instantiate(button) as GameObject;
+        Sprite cardImage = card.GetComponentsInChildren<Image>()[1].sprite;
+        cardImage = Resources.Load<Sprite>("img1") as Sprite;
+        card.transform.SetParent(thisCanvas.transform, false);
+        card.transform.SetParent(panel.transform);
+        card.name = name;
+        card.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
 
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
-        p.createProduct(product);
+        p.transform.SetParent(panelManager.currPanel.transform);
+        p.createProduct(product, card);
 
-        icon.GetComponent<Button>().onClick.AddListener(() =>
+        card.GetComponent<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
+               GameObject selectProduct = new GameObject();
+               Product pp = selectProduct.AddComponent<Product>();
+               pp.createProduct(product);
+               pp.transform.SetParent(panelManager.currPanel.transform);
                panelManager.openPanel();
-               panelManager.setData(p);
+               panelManager.setData(pp);
            });
 
         yield return StartCoroutine(p.setImageByColor(p.color));
+    }
+    public void changeImage()
+    {
 
-        icon.GetComponentsInChildren<Image>()[1].sprite = p.getImageByColor(p.color);
 
     }
 

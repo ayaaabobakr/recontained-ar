@@ -44,6 +44,7 @@ public class DetailsMenu : MonoBehaviour
         }
 
     }
+    
     public IEnumerator changeColor(string colorName)
     {
 
@@ -57,6 +58,7 @@ public class DetailsMenu : MonoBehaviour
         image.GetComponent<Image>().sprite = product.getImageByColor(colorName); ;
 
     }
+    
     public void setColorPanel()
     {
         Sprite[] images = this.product.colorImages;

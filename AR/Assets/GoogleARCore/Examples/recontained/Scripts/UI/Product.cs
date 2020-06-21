@@ -16,10 +16,13 @@ public class Product : MonoBehaviour
     public GameObject prefab;
     public Sprite image;
     public string color;
+    public string mainColor;
     public GameObject colorPanel;
     public string imageUrl;
     public string prefabUrl;
     public Sprite[] colorImages;
+    public GameObject card;
+    public Toggle toggle;
     private Dictionary<string, Sprite> imageMap;
     private Dictionary<string, GameObject> prefabMap;
     private FirebaseFirestore db;
@@ -51,78 +54,26 @@ public class Product : MonoBehaviour
         this.prefabUrlMap.Add(this.color, this.prefabUrl);
 
     }
-
-    // public IEnumerator setImage(string url)
-    // {
-    //     UnityWebRequest wr = new UnityWebRequest(url);
-    //     DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
-    //     wr.downloadHandler = texDl;
-    //     yield return wr.SendWebRequest();
-
-    //     if (!(wr.isNetworkError || wr.isHttpError))
-    //     {
-    //         Texture2D t = texDl.texture;
-    //         this.image = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
-    //         Debug.Log("image is Loaded");
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("www.error");
-    //     }
-    // }
-
-    // public Sprite getImage()
-    // {
-    //     return image;
-    // }
-
-    public IEnumerator setPrefabByColor(string colorName)
+    public void createProduct(Dictionary<string, object> product, GameObject card)
     {
-
-        if (this.prefabMap.ContainsKey(colorName)) { yield break; }
-
-        if (!prefabUrlMap.ContainsKey(colorName))
-        {
-            Debug.Log("the prefab url is not here");
-            yield break;
-        }
-
-        string url = this.prefabUrlMap[colorName];
-        WWW www = new WWW(url);
-        yield return www;
-        AssetBundle bundle = www.assetBundle;
-
-        if (www.error == null)
-        {
-            if (!prefabMap.ContainsKey(colorName))
-            {
-                Debug.Log("Prefab is loaded");
-                string prefabName = this.pName + this.productID + " " + colorName;
-                Debug.Log(prefabName);
-                this.prefab = (GameObject)bundle.LoadAsset(prefabName);
-                this.prefabMap.Add(colorName, this.prefab);
-            }
-
-            if (this.prefab.GetComponent<BoxCollider>() == null)
-            {
-                this.prefab.AddComponent<BoxCollider>();
-            }
-        }
-        else
-        {
-            Debug.Log("www.error");
-        }
-
-    }
-
-    public GameObject getPrefabByColor(string colorName)
-    {
-        if (this.prefabMap.ContainsKey(colorName))
-        {
-            Debug.Log("The prefab is currently in the map");
-            return this.prefabMap[colorName];
-        }
-        return null;
+        this.pName = product["name"].ToString();
+        this.color = product["color"].ToString();
+        this.imageUrl = product["imageUrl"].ToString();
+        this.prefabUrl = product["prefabUrl"].ToString();
+        this.categoryID = int.Parse(product["categoryID"].ToString());
+        this.productID = int.Parse(product["ID"].ToString());
+        this.colorUrlMap = new Dictionary<string, string>();
+        this.imageUrlMap = new Dictionary<string, string>();
+        this.prefabUrlMap = new Dictionary<string, string>();
+        this.imageMap = new Dictionary<string, Sprite>();
+        this.prefabMap = new Dictionary<string, GameObject>();
+        this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+        this.mainColor = this.color;
+        this.card = card;
+        toggle = gameObject.AddComponent<Toggle>();
+        toggle.isOn = true;
+        toggle.interactable = false;
     }
 
     public IEnumerator getColors()
@@ -210,6 +161,7 @@ public class Product : MonoBehaviour
 
     public IEnumerator setImageByColor(string colorName)
     {
+        Debug.Log("I'am setting image by color");
         if (this.imageMap.ContainsKey(colorName)) { yield break; }
 
         if (!imageUrlMap.ContainsKey(colorName)) { yield break; }
@@ -222,10 +174,15 @@ public class Product : MonoBehaviour
         if (!(wr.isNetworkError || wr.isHttpError))
         {
             Texture2D t = texDl.texture;
+            Sprite sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
+            if (this.mainColor == colorName)
+            {
+                card.GetComponentsInChildren<Image>()[1].sprite = sprite;
+                toggle.isOn = false;
+            }
             if (!imageMap.ContainsKey(colorName))
             {
-                this.imageMap.Add(colorName, Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f));
-                yield return StartCoroutine(setPrefabByColor(colorName));
+                this.imageMap.Add(colorName, sprite);
             }
         }
         else
@@ -243,6 +200,56 @@ public class Product : MonoBehaviour
         }
         return image;
     }
+
+    public IEnumerator setPrefabByColor(string colorName)
+    {
+
+        if (this.prefabMap.ContainsKey(colorName)) { yield break; }
+
+        if (!prefabUrlMap.ContainsKey(colorName))
+        {
+            Debug.Log("the prefab url is not here");
+            yield break;
+        }
+
+        string url = this.prefabUrlMap[colorName];
+        WWW www = new WWW(url);
+        yield return www;
+        AssetBundle bundle = www.assetBundle;
+
+        if (www.error == null)
+        {
+            if (!prefabMap.ContainsKey(colorName))
+            {
+                Debug.Log("Prefab is loaded");
+                string prefabName = this.pName + this.productID + " " + colorName;
+                Debug.Log(prefabName);
+                this.prefab = (GameObject)bundle.LoadAsset(prefabName);
+                this.prefabMap.Add(colorName, this.prefab);
+            }
+
+            if (this.prefab.GetComponent<BoxCollider>() == null)
+            {
+                this.prefab.AddComponent<BoxCollider>();
+            }
+        }
+        else
+        {
+            Debug.Log("www.error");
+        }
+
+    }
+
+    public GameObject getPrefabByColor(string colorName)
+    {
+        if (this.prefabMap.ContainsKey(colorName))
+        {
+            Debug.Log("The prefab is currently in the map");
+            return this.prefabMap[colorName];
+        }
+        return null;
+    }
+
 }
 
 
