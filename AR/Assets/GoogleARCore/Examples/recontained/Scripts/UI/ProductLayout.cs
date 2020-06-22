@@ -21,43 +21,9 @@ public class ProductLayout : MonoBehaviour
     {
         panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
     }
-
-    void setUpGrid()
-    {
-        GridLayoutGroup grid = panel.GetComponent<GridLayoutGroup>();
-        RectTransform panelDimensions = panel.GetComponent<RectTransform>();
-        Vector2 newScale = panelDimensions.sizeDelta;
-        Vector2 sizeOfCell;
-        sizeOfCell.x = grid.cellSize.x + grid.padding.left + grid.padding.right + grid.spacing.x;
-        sizeOfCell.y = grid.cellSize.y + grid.padding.top + grid.padding.bottom + grid.spacing.y;
-        int numInRow = Convert.ToInt32(newScale.x / sizeOfCell.x);
-        int numInColoum = (numInRow == 0) ? 0 : (numOfProduct + numInRow - 1) / numInRow;
-
-        if (Horizontal && Vertical)
-        {
-            newScale.y = numInColoum * sizeOfCell.y;
-            newScale.x = numInRow * sizeOfCell.x;
-        }
-        else if (Horizontal)
-        {
-
-            newScale.y = numOfProduct * sizeOfCell.y;
-            newScale.x = sizeOfCell.x;
-        }
-        else if (Vertical)
-        {
-            newScale.x = numOfProduct * sizeOfCell.x;
-            newScale.y = sizeOfCell.y;
-        }
-
-        panelDimensions.sizeDelta = newScale;
-
-    }
     public void setProduct()
     {
         clearProducts();
-        numOfProduct = data.Count;
-        setUpGrid();
         Debug.Log("I am in set Product");
 
         foreach (DocumentSnapshot documentSnapshot in data.Documents)
