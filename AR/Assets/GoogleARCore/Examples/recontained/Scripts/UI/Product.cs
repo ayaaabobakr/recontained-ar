@@ -7,6 +7,7 @@ using Firebase.Extensions;
 using Firebase.Firestore;
 using System.Threading.Tasks;
 
+
 public class Product : MonoBehaviour
 {
     public GameObject DetailsMenu;
@@ -30,6 +31,7 @@ public class Product : MonoBehaviour
     private Dictionary<string, string> imageUrlMap;
     private Dictionary<string, string> prefabUrlMap;
     private Dictionary<string, string> colorUrlMap;
+    private Dictionary<string, string> colorHex;
 
 
     private void Start()
@@ -45,6 +47,7 @@ public class Product : MonoBehaviour
         this.prefabUrl = product["prefabUrl"].ToString();
         this.categoryID = int.Parse(product["categoryID"].ToString());
         this.productID = int.Parse(product["ID"].ToString());
+        this.colorHex = new Dictionary<string, string>();
         this.colorUrlMap = new Dictionary<string, string>();
         this.imageUrlMap = new Dictionary<string, string>();
         this.prefabUrlMap = new Dictionary<string, string>();
@@ -62,6 +65,7 @@ public class Product : MonoBehaviour
         this.prefabUrl = product["prefabUrl"].ToString();
         this.categoryID = int.Parse(product["categoryID"].ToString());
         this.productID = int.Parse(product["ID"].ToString());
+        this.colorHex = new Dictionary<string, string>();
         this.colorUrlMap = new Dictionary<string, string>();
         this.imageUrlMap = new Dictionary<string, string>();
         this.prefabUrlMap = new Dictionary<string, string>();
@@ -90,16 +94,63 @@ public class Product : MonoBehaviour
             {
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
                 this.colors[cnt] = product["color"].ToString();
-                this.colorUrlMap.Add(colors[cnt], product["colorUrl"].ToString());
+                this.colorHex.Add(colors[cnt], product["colorHex"].ToString());
                 if (this.color != colors[cnt])
                 {
                     this.imageUrlMap.Add(colors[cnt], product["imageUrl"].ToString());
                     this.prefabUrlMap.Add(colors[cnt], product["prefabUrl"].ToString());
 
                 }
-                StartCoroutine(getColorImages(this.colors[cnt], cnt++));
+                Debug.Log("Getting color by Hex");
+                createColorImages(this.colorHex[this.colors[cnt]], cnt++);
             }
         });
+    }
+
+    public void createColorImages(string colorHex, int cnt)
+    {
+        GameObject colorCard = new GameObject();
+        Color colorRBG;
+        Image colorImage = colorCard.AddComponent<Image>();
+        if (ColorUtility.TryParseHtmlString(colorHex, out colorRBG))
+        {
+            colorImage.color = colorRBG;
+        }
+
+        colorImages[cnt] = colorImage.sprite;
+        colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
+
+        Toggle colorToggle = colorCard.AddComponent<Toggle>();
+        Outline colorOutline = colorCard.AddComponent<Outline>();
+        colorOutline.effectDistance = new Vector2(2, 2);
+        colorOutline.effectColor = new Color(0, 0, 0, 1);
+        colorToggle.group = colorPanel.GetComponent<ToggleGroup>();
+        colorToggle.name = this.colors[cnt];
+        if (this.color == this.colors[cnt])
+        {
+            colorOutline.enabled = true;
+            colorToggle.isOn = true;
+        }
+        else
+        {
+            colorOutline.enabled = false;
+            colorToggle.isOn = false;
+        }
+
+        colorToggle.onValueChanged.AddListener(delegate
+        {
+            if (colorToggle.isOn)
+            {
+                colorOutline.enabled = true;
+                StartCoroutine(DetailsMenu.GetComponent<DetailsMenu>().changeColor(colorToggle.name));
+            }
+            else
+            {
+                colorOutline.enabled = false;
+            }
+        });
+        Debug.Log("color image is Loaded");
+
     }
 
     public IEnumerator getColorImages(string color, int cnt)
