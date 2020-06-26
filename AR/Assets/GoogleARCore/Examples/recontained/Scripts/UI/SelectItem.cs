@@ -73,18 +73,19 @@ public class SelectItem : MonoBehaviour
 
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
-        p.transform.SetParent(panelManager.currPanel.transform);
+        p.transform.SetParent(thisCanvas.transform);
         p.createProduct(product, card);
+        p.toggle.group = panelManager.currPanel.GetComponent<ToggleGroup>();
 
         card.GetComponent<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
-               GameObject selectProduct = new GameObject();
-               Product pp = selectProduct.AddComponent<Product>();
-               pp.createProduct(product);
-               pp.transform.SetParent(panelManager.currPanel.transform);
+               //    GameObject selectProduct = new GameObject();
+               //    Product pp = selectProduct.AddComponent<Product>();
+               //    pp.createProduct(product);
+               //    pp.transform.SetParent(panelManager.currPanel.transform);
                panelManager.openPanel();
-               panelManager.setData(pp);
+               panelManager.setData(p);
            });
 
         yield return StartCoroutine(p.setImageByColor(p.color));

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Firebase.Firestore;
-using System;
 
 public class ProductLayout : MonoBehaviour
 {
@@ -11,11 +10,9 @@ public class ProductLayout : MonoBehaviour
     public GameObject productBtn;
     public GameObject canvas;
     public GameObject panel;
-    public bool Horizontal;
-    public bool Vertical;
     private panelManager panelManager;
     public GameObject DetailMenu;
-    private int numOfProduct;
+    public List<GameObject> garbage;
 
     void Start()
     {
@@ -46,25 +43,31 @@ public class ProductLayout : MonoBehaviour
         card.name = name;
         card.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
 
+        garbage.Add(card);
+
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
+
+        garbage.Add(emptyProduct);
+
         if (panelManager == null)
         {
             Debug.Log("panelManager is null");
             panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
         }
-        p.transform.SetParent(panelManager.currPanel.transform);
+        p.transform.SetParent(canvas.transform);
         p.createProduct(product, card);
+        p.toggle.group = panelManager.currPanel.GetComponent<ToggleGroup>();
 
         card.GetComponent<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
-               GameObject selectProduct = new GameObject();
-               Product pp = selectProduct.AddComponent<Product>();
-               pp.createProduct(product);
-               pp.transform.SetParent(panelManager.currPanel.transform);
+               //    GameObject selectProduct = new GameObject();
+               //    Product pp = selectProduct.AddComponent<Product>();
+               //    pp.createProduct(product);
+               //    pp.transform.SetParent(panelManager.currPanel.transform);
                panelManager.openPanel();
-               panelManager.setData(pp);
+               panelManager.setData(p);
            });
 
         yield return StartCoroutine(p.setImageByColor(p.color));
@@ -72,6 +75,7 @@ public class ProductLayout : MonoBehaviour
 
     public void clearProducts()
     {
+        garbage?.ForEach(Destroy);
         var products = panel.GetComponentsInChildren<Button>();
         foreach (var product in products)
         {

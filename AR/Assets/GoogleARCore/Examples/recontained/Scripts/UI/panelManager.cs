@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public class panelManager : MonoBehaviour
 {
-
+    public GameObject canvas;
     public GameObject currPanel { get; set; }
     public GameObject mainPanel;
     public GameObject colorPanel;
@@ -63,11 +63,12 @@ public class panelManager : MonoBehaviour
             Debug.Log("PanelStack is not empty");
             panelStack.Peek().SetActive(false);
         }
-        Load();
+
         panelStack.Push(currPanel);
         currPanel.SetActive(true);
+        Load();
         StartCoroutine(openAnimation());
-        
+
 
     }
     public void closePanel()
@@ -147,16 +148,14 @@ public class panelManager : MonoBehaviour
 
     public void Load()
     {
-        Toggle[] toggles = currPanel.GetComponentsInChildren<Toggle>();
-        if (currPanel == mainPanel)
+        ToggleGroup toggleGroup = currPanel.GetComponent<ToggleGroup>();
+        if (toggleGroup == null)
         {
-            Debug.Log("the number of toggles are " + toggles.Length + " and the current panel is mainPanel");
+            Debug.Log("No Toggle Group here");
+            return;
         }
-        else
-        {
-            Debug.Log("the number of toggles are " + toggles.Length + " and the current panel is categoryPanel");
-        }
-
+        var toggles = toggleGroup.ActiveToggles();
+        Debug.Log("the lenght of the active toggle in this group is " + toggles);
         foreach (Toggle toggle in toggles)
         {
             if (toggle.isOn)

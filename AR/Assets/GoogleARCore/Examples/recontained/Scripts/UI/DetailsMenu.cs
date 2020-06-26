@@ -10,10 +10,12 @@ public class DetailsMenu : MonoBehaviour
     public GameObject image;
     public GameObject colorPanel;
     public GameObject ViewInSpace;
+    public List<GameObject> garbage;
 
     public IEnumerator Loadpage(Product product)
     {
         clearPanel();
+
         this.product = product;
         this.product.colorPanel = colorPanel;
         this.product.DetailsMenu = panel;
@@ -22,8 +24,18 @@ public class DetailsMenu : MonoBehaviour
         Debug.Log("i will put the product in the addobject component");
         addObj.product = product;
 
-        panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.pName;
+        panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.name;
         string color = this.product.color;
+        
+        if (product.colorImages == null || product.colorImages.Length == 0)
+        {
+            Debug.Log("getColors");
+            this.product.getColors();
+        }
+        else
+        {
+            setColorPanel();
+        }
 
         if (this.product.image == null)
         {
@@ -33,18 +45,10 @@ public class DetailsMenu : MonoBehaviour
         this.product.image = this.product.getImageByColor(color);
         image.GetComponent<Image>().sprite = this.product.image;
 
-        if (product.colorImages == null || product.colorImages.Length == 0)
-        {
-            Debug.Log("getColors");
-            yield return StartCoroutine(this.product.getColors());
-        }
-        else
-        {
-            setColorPanel();
-        }
+
 
     }
-    
+
     public IEnumerator changeColor(string colorName)
     {
 
@@ -58,7 +62,7 @@ public class DetailsMenu : MonoBehaviour
         image.GetComponent<Image>().sprite = product.getImageByColor(colorName); ;
 
     }
-    
+
     public void setColorPanel()
     {
         Sprite[] images = this.product.colorImages;
@@ -81,6 +85,7 @@ public class DetailsMenu : MonoBehaviour
     {
         Debug.Log("clearDetailsPanel");
         product = null;
+        garbage?.ForEach(Destroy);
         image.GetComponent<Image>().sprite = Resources.Load<Sprite>("img1") as Sprite;
         var colors = colorPanel.GetComponentsInChildren<Image>();
         for (int i = 1; i < colors.Length; ++i)

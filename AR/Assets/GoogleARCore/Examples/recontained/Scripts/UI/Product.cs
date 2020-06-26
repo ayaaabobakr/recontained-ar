@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 public class Product : MonoBehaviour
 {
     public GameObject DetailsMenu;
-    public string pName { get; set; }
+    public string name { get; set; }
     public int categoryID { get; set; }
     public int productID { get; set; }
     public GameObject prefab;
     public Sprite image;
-    public string color;
+    public string color { get; set; }
     public string mainColor;
     public GameObject colorPanel;
-    public string imageUrl;
-    public string prefabUrl;
+    public string imageUrl { get; set; }
+    public string prefabUrl { get; set; }
     public Sprite[] colorImages;
     public GameObject card;
     public Toggle toggle;
@@ -41,7 +41,7 @@ public class Product : MonoBehaviour
 
     public void createProduct(Dictionary<string, object> product)
     {
-        this.pName = product["name"].ToString();
+        this.name = product["name"].ToString();
         this.color = product["color"].ToString();
         this.imageUrl = product["imageUrl"].ToString();
         this.prefabUrl = product["prefabUrl"].ToString();
@@ -59,7 +59,7 @@ public class Product : MonoBehaviour
     }
     public void createProduct(Dictionary<string, object> product, GameObject card)
     {
-        this.pName = product["name"].ToString();
+        this.name = product["name"].ToString();
         this.color = product["color"].ToString();
         this.imageUrl = product["imageUrl"].ToString();
         this.prefabUrl = product["prefabUrl"].ToString();
@@ -80,11 +80,55 @@ public class Product : MonoBehaviour
         toggle.interactable = false;
     }
 
-    public IEnumerator getColors()
+    public void createProduct(Product product)
+    {
+        this.name = product.name;
+        this.color = product.color;
+        this.imageUrl = product.imageUrl;
+        this.prefabUrl = product.prefabUrl;
+        this.categoryID = product.categoryID;
+        this.productID = product.productID;
+        this.colorHex = new Dictionary<string, string>();
+        this.colorUrlMap = new Dictionary<string, string>();
+        this.imageUrlMap = new Dictionary<string, string>();
+        this.prefabUrlMap = new Dictionary<string, string>();
+        this.imageMap = new Dictionary<string, Sprite>();
+        this.prefabMap = new Dictionary<string, GameObject>();
+        this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+        this.mainColor = this.color;
+        toggle = gameObject.AddComponent<Toggle>();
+        toggle.isOn = true;
+        toggle.interactable = false;
+    }
+    
+    public void createProduct(Product product, GameObject card)
+    {
+        this.name = product.name;
+        this.color = product.color;
+        this.imageUrl = product.imageUrl;
+        this.prefabUrl = product.prefabUrl;
+        this.categoryID = product.categoryID;
+        this.productID = product.productID;
+        this.colorHex = new Dictionary<string, string>();
+        this.colorUrlMap = new Dictionary<string, string>();
+        this.imageUrlMap = new Dictionary<string, string>();
+        this.prefabUrlMap = new Dictionary<string, string>();
+        this.imageMap = new Dictionary<string, Sprite>();
+        this.prefabMap = new Dictionary<string, GameObject>();
+        this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+        this.mainColor = this.color;
+        this.card = card;
+        toggle = gameObject.AddComponent<Toggle>();
+        toggle.isOn = true;
+        toggle.interactable = false;
+    }
+
+    public void getColors()
     {
         Query products = db.Collection("ProductColor").WhereEqualTo("ID", this.productID);
         int cnt = 0;
-        yield return null;
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
@@ -153,63 +197,6 @@ public class Product : MonoBehaviour
 
     }
 
-    public IEnumerator getColorImages(string color, int cnt)
-    {
-        string url = this.colorUrlMap[color];
-
-        UnityWebRequest wr = new UnityWebRequest(url);
-        DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
-        wr.downloadHandler = texDl;
-        yield return wr.SendWebRequest();
-        if (!(wr.isNetworkError || wr.isHttpError))
-        {
-            Texture2D t = texDl.texture;
-            colorImages[cnt] = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
-
-            GameObject c = new GameObject();
-            Image colorImage = c.AddComponent<Image>();
-            colorImage.sprite = colorImages[cnt];
-            colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
-
-            Toggle colorToggle = c.AddComponent<Toggle>();
-            Outline colorOutline = c.AddComponent<Outline>();
-            colorOutline.effectDistance = new Vector2(2, 2);
-            colorOutline.effectColor = new Color(0, 0, 0, 1);
-            colorToggle.group = colorPanel.GetComponent<ToggleGroup>();
-            colorToggle.name = color;
-            if (this.color == color)
-            {
-                colorOutline.enabled = true;
-                colorToggle.isOn = true;
-            }
-            else
-            {
-                colorOutline.enabled = false;
-                colorToggle.isOn = false;
-            }
-
-            colorToggle.onValueChanged.AddListener(delegate
-            {
-                if (colorToggle.isOn)
-                {
-                    colorOutline.enabled = true;
-                    StartCoroutine(DetailsMenu.GetComponent<DetailsMenu>().changeColor(colorToggle.name));
-                }
-                else
-                {
-                    colorOutline.enabled = false;
-                }
-            });
-
-
-            Debug.Log("color image is Loaded");
-        }
-        else
-        {
-            Debug.Log("www.error");
-        }
-    }
-
     public IEnumerator setImageByColor(string colorName)
     {
         Debug.Log("I'am setting image by color");
@@ -241,6 +228,7 @@ public class Product : MonoBehaviour
             Debug.Log("www.error");
         }
     }
+   
     public Sprite getImageByColor(string colorName)
     {
         this.color = colorName;
@@ -251,7 +239,7 @@ public class Product : MonoBehaviour
         }
         return image;
     }
-
+  
     public IEnumerator setPrefabByColor(string colorName)
     {
 
@@ -273,7 +261,7 @@ public class Product : MonoBehaviour
             if (!prefabMap.ContainsKey(colorName))
             {
                 Debug.Log("Prefab is loaded");
-                string prefabName = this.pName + this.productID + " " + colorName;
+                string prefabName = this.name + this.productID + " " + colorName;
                 Debug.Log(prefabName);
                 this.prefab = (GameObject)bundle.LoadAsset(prefabName);
                 this.prefabMap.Add(colorName, this.prefab);
