@@ -27,11 +27,11 @@ public class ProductLayout : MonoBehaviour
         {
             Dictionary<string, object> product = documentSnapshot.ToDictionary();
             Debug.Log("I am in set Product with product name is" + product["name"].ToString());
-            StartCoroutine(productCard(product));
+            productCard(product);
         }
     }
 
-    public IEnumerator productCard(Dictionary<string, object> product)
+    public void productCard(Dictionary<string, object> product)
     {
 
         var name = product["name"].ToString();
@@ -70,7 +70,7 @@ public class ProductLayout : MonoBehaviour
                panelManager.setData(p);
            });
 
-        yield return StartCoroutine(p.setImageByColor(p.color));
+        StartCoroutine(p.setCardImage());
     }
 
     public void clearProducts()

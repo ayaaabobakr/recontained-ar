@@ -21,12 +21,11 @@ public class DetailsMenu : MonoBehaviour
         this.product.DetailsMenu = panel;
 
         AddObject addObj = ViewInSpace.GetComponent<AddObject>();
-        Debug.Log("i will put the product in the addobject component");
         addObj.product = product;
 
         panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.name;
         string color = this.product.color;
-        
+
         if (product.colorImages == null || product.colorImages.Length == 0)
         {
             Debug.Log("getColors");
@@ -37,15 +36,13 @@ public class DetailsMenu : MonoBehaviour
             setColorPanel();
         }
 
-        if (this.product.image == null)
+        if (this.product.image != null)
         {
-            yield return StartCoroutine(this.product.setImageByColor(color));
+            image.GetComponent<Image>().sprite = this.product.image;
         }
 
-        this.product.image = this.product.getImageByColor(color);
-        image.GetComponent<Image>().sprite = this.product.image;
-
-
+        yield return StartCoroutine(this.product.setImageByColor(color));
+        image.GetComponent<Image>().sprite = this.product.getImageByColor(color);
 
     }
 
@@ -83,10 +80,10 @@ public class DetailsMenu : MonoBehaviour
 
     public void clearPanel()
     {
-        Debug.Log("clearDetailsPanel");
         product = null;
         garbage?.ForEach(Destroy);
-        image.GetComponent<Image>().sprite = Resources.Load<Sprite>("img1") as Sprite;
+
+
         var colors = colorPanel.GetComponentsInChildren<Image>();
         for (int i = 1; i < colors.Length; ++i)
         {

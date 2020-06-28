@@ -20,18 +20,23 @@ public class SelectItem : MonoBehaviour
     Rect buttonDimensions;
     FirebaseFirestore db;
     GameObject item;
+    private Toggle toggle;
 
-    bool isloading = true;
-
-    void Start()
+    private void OnEnable()
     {
-        panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
-        panelDimensions = panel.GetComponent<RectTransform>();
-        buttonDimensions = button.GetComponent<RectTransform>().rect;
-        db = FirebaseFirestore.DefaultInstance;
-        // StartCoroutine(loading());
-        loadButton();
+        toggle = panel.GetComponent<Toggle>();
+
+        if (toggle.isOn)
+        {
+            panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
+            panelDimensions = panel.GetComponent<RectTransform>();
+            buttonDimensions = button.GetComponent<RectTransform>().rect;
+            db = FirebaseFirestore.DefaultInstance;
+            loadButton();
+        }
     }
+
+
 
     void SetUpGrid(GameObject panel, int item_num)
     {
@@ -48,18 +53,21 @@ public class SelectItem : MonoBehaviour
 
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
+
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
             SetUpGrid(panel, allcategoriesQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
-                StartCoroutine(createButton(product));
+                createButton(product);
             }
+            panel.GetComponent<Toggle>().isOn = false;
         });
+
 
     }
 
-    public IEnumerator createButton(Dictionary<string, object> product)
+    public void createButton(Dictionary<string, object> product)
     {
         var name = product["name"].ToString();
 
@@ -73,6 +81,8 @@ public class SelectItem : MonoBehaviour
 
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
+
+
         p.transform.SetParent(thisCanvas.transform);
         p.createProduct(product, card);
         p.toggle.group = panelManager.currPanel.GetComponent<ToggleGroup>();
@@ -80,20 +90,11 @@ public class SelectItem : MonoBehaviour
         card.GetComponent<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
-               //    GameObject selectProduct = new GameObject();
-               //    Product pp = selectProduct.AddComponent<Product>();
-               //    pp.createProduct(product);
-               //    pp.transform.SetParent(panelManager.currPanel.transform);
                panelManager.openPanel();
                panelManager.setData(p);
            });
 
-        yield return StartCoroutine(p.setImageByColor(p.color));
-    }
-    public void changeImage()
-    {
-
-
+        StartCoroutine(p.setCardImage());
     }
 
 }

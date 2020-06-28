@@ -161,7 +161,7 @@ public class panelManager : MonoBehaviour
             if (toggle.isOn)
             {
                 Product product = toggle.GetComponent<Product>();
-                StartCoroutine(product.setImageByColor(product.mainColor));
+                StartCoroutine(product.setCardImage());
             }
 
         }

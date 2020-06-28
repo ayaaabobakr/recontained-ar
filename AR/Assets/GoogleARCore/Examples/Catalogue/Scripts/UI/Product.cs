@@ -1,12 +1,10 @@
 ﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
 using System.Collections.Generic;
 using Firebase.Extensions;
 using Firebase.Firestore;
-using System.Threading.Tasks;
-
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Product : MonoBehaviour
 {
@@ -19,7 +17,8 @@ public class Product : MonoBehaviour
     public string color { get; set; }
     public string mainColor;
     public GameObject colorPanel;
-    public string imageUrl { get; set; }
+    public string lowQualityImageUrl { get; set; }
+    public string highQualityImageUrl { get; set; }
     public string prefabUrl { get; set; }
     public Sprite[] colorImages;
     public GameObject card;
@@ -33,7 +32,6 @@ public class Product : MonoBehaviour
     private Dictionary<string, string> colorUrlMap;
     private Dictionary<string, string> colorHex;
 
-
     private void Start()
     {
         db = FirebaseFirestore.DefaultInstance;
@@ -43,7 +41,8 @@ public class Product : MonoBehaviour
     {
         this.name = product["name"].ToString();
         this.color = product["color"].ToString();
-        this.imageUrl = product["imageUrl"].ToString();
+        this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString();
+        this.highQualityImageUrl = product["highQualityImageUrl"].ToString();
         this.prefabUrl = product["prefabUrl"].ToString();
         this.categoryID = int.Parse(product["categoryID"].ToString());
         this.productID = int.Parse(product["ID"].ToString());
@@ -53,15 +52,17 @@ public class Product : MonoBehaviour
         this.prefabUrlMap = new Dictionary<string, string>();
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
-        this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.imageUrlMap.Add(this.color, this.highQualityImageUrl);
         this.prefabUrlMap.Add(this.color, this.prefabUrl);
 
     }
+
     public void createProduct(Dictionary<string, object> product, GameObject card)
     {
         this.name = product["name"].ToString();
         this.color = product["color"].ToString();
-        this.imageUrl = product["imageUrl"].ToString();
+        this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString();
+        this.highQualityImageUrl = product["highQualityImageUrl"].ToString();
         this.prefabUrl = product["prefabUrl"].ToString();
         this.categoryID = int.Parse(product["categoryID"].ToString());
         this.productID = int.Parse(product["ID"].ToString());
@@ -71,7 +72,7 @@ public class Product : MonoBehaviour
         this.prefabUrlMap = new Dictionary<string, string>();
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
-        this.imageUrlMap.Add(this.color, this.imageUrl);
+        this.imageUrlMap.Add(this.color, this.highQualityImageUrl);
         this.prefabUrlMap.Add(this.color, this.prefabUrl);
         this.mainColor = this.color;
         this.card = card;
@@ -84,7 +85,8 @@ public class Product : MonoBehaviour
     {
         this.name = product.name;
         this.color = product.color;
-        this.imageUrl = product.imageUrl;
+        // this.lowQualityImageUrl = product.lowQualityImageUrl;
+        // this.highQualityImageUrl = product.highQualityImageUrl;
         this.prefabUrl = product.prefabUrl;
         this.categoryID = product.categoryID;
         this.productID = product.productID;
@@ -94,19 +96,20 @@ public class Product : MonoBehaviour
         this.prefabUrlMap = new Dictionary<string, string>();
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
-        this.imageUrlMap.Add(this.color, this.imageUrl);
-        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+        // this.imageUrlMap.Add(this.color, this.imageUrl);
+        // this.prefabUrlMap.Add(this.color, this.prefabUrl);
         this.mainColor = this.color;
         toggle = gameObject.AddComponent<Toggle>();
         toggle.isOn = true;
         toggle.interactable = false;
     }
-    
+
     public void createProduct(Product product, GameObject card)
     {
         this.name = product.name;
         this.color = product.color;
-        this.imageUrl = product.imageUrl;
+        // this.lowQualityImageUrl = product.lowQualityImageUrl;
+        // this.highQualityImageUrl = product.highQualityImageUrl;
         this.prefabUrl = product.prefabUrl;
         this.categoryID = product.categoryID;
         this.productID = product.productID;
@@ -116,8 +119,8 @@ public class Product : MonoBehaviour
         this.prefabUrlMap = new Dictionary<string, string>();
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
-        this.imageUrlMap.Add(this.color, this.imageUrl);
-        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+        // this.imageUrlMap.Add(this.color, this.imageUrl);
+        // this.prefabUrlMap.Add(this.color, this.prefabUrl);
         this.mainColor = this.color;
         this.card = card;
         toggle = gameObject.AddComponent<Toggle>();
@@ -134,6 +137,9 @@ public class Product : MonoBehaviour
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
             this.colors = new string[allcategoriesQuerySnapshot.Count];
             colorImages = new Sprite[allcategoriesQuerySnapshot.Count];
+
+            Debug.Log("number of colors are " + allcategoriesQuerySnapshot.Count);
+
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
@@ -141,9 +147,12 @@ public class Product : MonoBehaviour
                 this.colorHex.Add(colors[cnt], product["colorHex"].ToString());
                 if (this.color != colors[cnt])
                 {
-                    this.imageUrlMap.Add(colors[cnt], product["imageUrl"].ToString());
+                    this.imageUrlMap.Add(colors[cnt], product["highQualityImageUrl"].ToString());
                     this.prefabUrlMap.Add(colors[cnt], product["prefabUrl"].ToString());
-
+                }
+                else
+                {
+                    setImageByColor(colors[cnt]);
                 }
                 Debug.Log("Getting color by Hex");
                 createColorImages(this.colorHex[this.colors[cnt]], cnt++);
@@ -151,11 +160,33 @@ public class Product : MonoBehaviour
         });
     }
 
+    public IEnumerator setCardImage()
+    {
+
+        string url = this.lowQualityImageUrl;
+        UnityWebRequest wr = new UnityWebRequest(url);
+        DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
+        wr.downloadHandler = texDl;
+        yield return wr.SendWebRequest();
+        if (!(wr.isNetworkError || wr.isHttpError))
+        {
+            Texture2D t = texDl.texture;
+            Sprite sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
+            this.image = sprite;
+            card.GetComponentsInChildren<Image>()[1].sprite = sprite;
+        }
+        else
+        {
+            Debug.Log("www.error");
+        }
+    }
+
     public void createColorImages(string colorHex, int cnt)
     {
         GameObject colorCard = new GameObject();
         Color colorRBG;
         Image colorImage = colorCard.AddComponent<Image>();
+        colorImage.rectTransform.sizeDelta = new Vector2(50, 50);
         if (ColorUtility.TryParseHtmlString(colorHex, out colorRBG))
         {
             colorImage.color = colorRBG;
@@ -222,13 +253,14 @@ public class Product : MonoBehaviour
             {
                 this.imageMap.Add(colorName, sprite);
             }
+            Debug.Log("Color is loaded" + colorName);
         }
         else
         {
             Debug.Log("www.error");
         }
     }
-   
+
     public Sprite getImageByColor(string colorName)
     {
         this.color = colorName;
@@ -239,7 +271,7 @@ public class Product : MonoBehaviour
         }
         return image;
     }
-  
+
     public IEnumerator setPrefabByColor(string colorName)
     {
 
@@ -290,9 +322,3 @@ public class Product : MonoBehaviour
     }
 
 }
-
-
-
-
-
-

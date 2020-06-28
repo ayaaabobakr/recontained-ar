@@ -96,7 +96,7 @@ namespace Assets.Scripts
                        panelManager.setData(pp);
                    });
 
-                yield return StartCoroutine(p.setImageByColor(p.color));
+                yield return StartCoroutine(p.setCardImage());
             }
 
         }
