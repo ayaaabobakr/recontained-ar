@@ -1,22 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Extensions;
 using Firebase.Firestore;
 using UnityEngine.UI;
+using Firebase.Auth;
+using System;
 
 public class DataManager : MonoBehaviour
 {
     public GameObject categoryPanel;
+
+    public GameObject FavouritePanel;
     private FirebaseFirestore db;
     private panelManager panelManager;
-
-
+    private FirebaseAuth auth;
 
     void Start()
     {
         db = FirebaseFirestore.DefaultInstance;
         panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
+        auth = FirebaseAuth.DefaultInstance;
     }
 
     public void getDatabyCategory(Button btn)
@@ -35,6 +38,71 @@ public class DataManager : MonoBehaviour
                 panelManager.openPanel();
                 categoryPanel.GetComponent<ProductLayout>().setProduct();
 
+
+            }
+            else if (task.IsCanceled || task.IsFaulted)
+            {
+                Debug.Log("is canceled or is fault");
+                // Error Panel Required;
+            }
+
+        });
+
+    }
+
+    public void getFavouriteProducts()
+    {
+
+        Query products = db.Collection("Favourite").WhereEqualTo("userID", auth.CurrentUser.UserId);
+
+        products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                QuerySnapshot allcategoriesQuerySnapshot = task.Result;
+                if (allcategoriesQuerySnapshot.Count == 0)
+                {
+                    panelManager.setPanel(FavouritePanel);
+                    panelManager.openPanel();
+                    return;
+                }
+                foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
+                {
+
+                    Dictionary<string, object> product = documentSnapshot.ToDictionary();
+                    var productID = Int32.Parse(product["productID"].ToString());
+                    Debug.Log(productID);
+                    getProductByID(productID);
+                }
+
+
+
+            }
+            else if (task.IsCanceled || task.IsFaulted)
+            {
+                Debug.Log("is canceled or is fault");
+                // Error Panel Required;
+            }
+
+        });
+
+    }
+
+    public void getProductByID(int productID)
+    {
+
+        Query products = db.Collection("Products").WhereEqualTo("ID", productID);
+
+        products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                Debug.Log("task.Result.Count" + task.Result.Count);
+                FavouritePanel.GetComponent<ProductLayout>().data = task.Result;
+                panelManager.setPanel(FavouritePanel);
+                panelManager.openPanel();
+                FavouritePanel.GetComponent<ProductLayout>().setProduct();
+                Debug.Log("is completed");
 
             }
             else if (task.IsCanceled || task.IsFaulted)

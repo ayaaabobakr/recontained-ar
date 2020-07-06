@@ -1,20 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading.Tasks;
+
 
 public class panelManager : MonoBehaviour
 {
-    public GameObject canvas;
     public GameObject currPanel { get; set; }
     public GameObject mainPanel;
-    public GameObject colorPanel;
-    public GameObject productImage;
+    public GameObject dataManager;
     private Vector3 panelLocation;
     private Vector3 upLocation;
     private Stack<GameObject> panelStack;
     private float delta;
+
 
     private void Start()
     {
@@ -63,25 +63,26 @@ public class panelManager : MonoBehaviour
             Debug.Log("PanelStack is not empty");
             panelStack.Peek().SetActive(false);
         }
-
         panelStack.Push(currPanel);
         currPanel.SetActive(true);
         Load();
         StartCoroutine(openAnimation());
 
-
     }
+
     public void closePanel()
     {
         currPanel.SetActive(false);
+        deleteData();
         panelStack.Pop();
     }
 
     public void backPanel()
     {
         closePanel();
-        currPanel = panelStack.Peek();
+        currPanel = panelStack.Pop();
         openPanel();
+        Reload();
 
     }
 
@@ -89,13 +90,13 @@ public class panelManager : MonoBehaviour
     {
         Vector3 viewLoc = new Vector3(panelLocation.x, panelLocation.y - delta, panelLocation.z);
         yield return LeanTween.move(currPanel, viewLoc, 1f)
-        .setEase(LeanTweenType.easeOutBack);
+            .setEase(LeanTweenType.easeOutBack);
     }
 
     IEnumerator closeAnimation()
     {
         yield return LeanTween.move(currPanel, upLocation, 1f)
-        .setEase(LeanTweenType.easeOutBack);
+            .setEase(LeanTweenType.easeOutBack);
         closePanel();
     }
 
@@ -111,18 +112,6 @@ public class panelManager : MonoBehaviour
 
     }
 
-    public void getData()
-    {
-        switch (currPanel.tag)
-        {
-            case "mainMenu":
-                break;
-            case "detailsMenu":
-
-                break;
-        }
-    }
-
     public void setData(Product p)
     {
         Debug.Log("setData is activated");
@@ -130,20 +119,35 @@ public class panelManager : MonoBehaviour
         {
             case "mainMenu":
                 break;
+            case "FavouritePanel":
+            case "CategoriesPanel":
+                currPanel.GetComponent<ProductLayout>().clearProducts();
+                break;
             case "DetailsMenu":
                 Debug.Log("case Details menu");
-
                 StartCoroutine(currPanel.GetComponent<DetailsMenu>().Loadpage(p));
-
-                // currPanel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = p.pName;
-                // currPanel.AddComponent<Product>();
-                // productImage.GetComponent<Image>().sprite = p.image;
-                // currPanel.GetComponentInChildren<AddObject>().prefab = p.prefab;
-                // p.getColors();
-                // Debug.Log("I'm back from getColors awiat");
-                // setColor(p);
                 break;
         }
+    }
+
+    public void deleteData()
+    {
+        Debug.Log("deleteData is activated");
+        switch (currPanel.tag)
+        {
+            case "mainMenu":
+                break;
+
+            case "FavouritePanel":
+            case "CategoriesPanel":
+                currPanel.GetComponent<ProductLayout>().clearProducts();
+                break;
+            case "DetailsMenu":
+                currPanel.GetComponent<DetailsMenu>().clearPanel();
+                break;
+
+        }
+
     }
 
     public void Load()
@@ -164,6 +168,24 @@ public class panelManager : MonoBehaviour
                 StartCoroutine(product.setCardImage());
             }
 
+        }
+    }
+
+    public void Reload()
+    {
+        Debug.Log("deleteData is activated");
+        switch (currPanel.tag)
+        {
+            case "mainMenu":
+            case "CategoriesPanel":
+            case "DetailsMenu":
+                break;
+
+            case "FavouritePanel":
+                Debug.Log("Reload FavouritePanel");
+                currPanel.GetComponent<ProductLayout>().clearProductsLike();
+                dataManager.GetComponent<DataManager>().getFavouriteProducts();
+                break;
         }
     }
 }

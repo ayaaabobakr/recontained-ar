@@ -173,7 +173,7 @@ public class Product : MonoBehaviour
             Texture2D t = texDl.texture;
             Sprite sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
             this.image = sprite;
-            card.GetComponentsInChildren<Image>()[1].sprite = sprite;
+            this.card.GetComponentsInChildren<Image>()[1].sprite = sprite;
         }
         else
         {

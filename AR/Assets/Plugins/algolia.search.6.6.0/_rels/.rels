@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Type="http://schemas.microsoft.com/packaging/2010/07/manifest" Target="/Algolia.Search.nuspec" Id="RD24DF46FD3FE2478" />
-  <Relationship Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="/package/services/metadata/core-properties/91419405730f4934a50cfa37267a27c6.psmdcp" Id="RF4E7F2DCC5C7E0D7" />
-</Relationships>

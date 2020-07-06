@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/GoogleARCore/Examples/Catalogue/Scenes/User.unity
+    guid: c089104dbafec6e45b81ef1d7eb8917e
+  - enabled: 1
     path: Assets/GoogleARCore/Examples/Catalogue/Scenes/Catalogue.unity
     guid: 9dba7e74f4d2b410f90b920f80528d44
   m_configObjects: {}

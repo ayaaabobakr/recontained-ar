@@ -9,17 +9,12 @@ using System.Threading.Tasks;
 public class SelectItem : MonoBehaviour
 {
     public GameObject button;
+    public GameObject cardBtn;
     public GameObject thisCanvas;
     public GameObject panel;
-    private RectTransform panelDimensions;
-    public GameObject ObjectGenerator;
-    public GameObject closePanel;
     public GameObject DetailMenu;
     private panelManager panelManager;
-    private Vector2 newScale;
-    Rect buttonDimensions;
-    FirebaseFirestore db;
-    GameObject item;
+    private FirebaseFirestore db;
     private Toggle toggle;
 
     private void OnEnable()
@@ -29,22 +24,9 @@ public class SelectItem : MonoBehaviour
         if (toggle.isOn)
         {
             panelManager = GameObject.Find("PanelManager").GetComponent<panelManager>();
-            panelDimensions = panel.GetComponent<RectTransform>();
-            buttonDimensions = button.GetComponent<RectTransform>().rect;
             db = FirebaseFirestore.DefaultInstance;
             loadButton();
         }
-    }
-
-
-
-    void SetUpGrid(GameObject panel, int item_num)
-    {
-        GridLayoutGroup grid = panel.GetComponent<GridLayoutGroup>();
-
-        newScale = panelDimensions.sizeDelta;
-        newScale.x = (grid.spacing.x + grid.cellSize.x) * item_num + grid.padding.left + grid.padding.right;
-        panelDimensions.sizeDelta = newScale;
     }
 
     public void loadButton()
@@ -53,9 +35,7 @@ public class SelectItem : MonoBehaviour
 
         products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
-            SetUpGrid(panel, allcategoriesQuerySnapshot.Count);
             foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
             {
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
@@ -82,10 +62,15 @@ public class SelectItem : MonoBehaviour
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;
 
-
         p.transform.SetParent(thisCanvas.transform);
         p.createProduct(product, card);
         p.toggle.group = panelManager.currPanel.GetComponent<ToggleGroup>();
+
+        // Toggle toggle = card.GetComponentInChildren<Toggle>();
+        // AddToFavourite addToFavourite = toggle.gameObject.GetComponent<AddToFavourite>();
+        // addToFavourite.product = p;
+        // addToFavourite.toggle = toggle;
+        // addToFavourite.isLiked();
 
         card.GetComponent<Button>().onClick.AddListener(() =>
            {

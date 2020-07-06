@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Firebase.Auth;
+using Firebase.Firestore;
+using System;
+using Firebase.Extensions;
+
 
 public class DetailsMenu : MonoBehaviour
 {
@@ -11,17 +16,33 @@ public class DetailsMenu : MonoBehaviour
     public GameObject colorPanel;
     public GameObject ViewInSpace;
     public List<GameObject> garbage;
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+    private string userID;
 
+    private void Start()
+    {
+        Debug.Log("Detailsmenu Start");
+        db = FirebaseFirestore.DefaultInstance;
+        auth = FirebaseAuth.DefaultInstance;
+        userID = auth.CurrentUser.UserId;
+
+    }
     public IEnumerator Loadpage(Product product)
     {
-        clearPanel();
+        // clearPanel();
 
         this.product = product;
         this.product.colorPanel = colorPanel;
         this.product.DetailsMenu = panel;
+        var addToFavourite = panel.GetComponentInChildren<AddToFavourite>();
+        addToFavourite.GetComponent<AddToFavourite>().product = this.product;
+        addToFavourite.toggle = addToFavourite.gameObject.GetComponent<Toggle>();
+        addToFavourite.isLiked();
 
         AddObject addObj = ViewInSpace.GetComponent<AddObject>();
         addObj.product = product;
+
 
         panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.name;
         string color = this.product.color;
@@ -82,7 +103,6 @@ public class DetailsMenu : MonoBehaviour
     {
         product = null;
         garbage?.ForEach(Destroy);
-
 
         var colors = colorPanel.GetComponentsInChildren<Image>();
         for (int i = 1; i < colors.Length; ++i)
