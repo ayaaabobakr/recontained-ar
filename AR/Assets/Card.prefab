@@ -100,7 +100,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9ace0d67e5f149b45a71f6286cdb322f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d4c9775e833fdc746905fcf5dae6f805, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -217,6 +217,7 @@ MonoBehaviour:
   isLike: 0
   toggle: {fileID: 0}
   product: {fileID: 0}
+  favouriteProductsCards: []
 --- !u!1 &3505717154216818219
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,7 +282,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 40f6e4e7ecf28d543b5f396527eb979e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6f820de68c2ea9946a40259e5ac5aab3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
