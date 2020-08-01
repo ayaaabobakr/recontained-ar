@@ -82,22 +82,15 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
             }
 
-            // Ray ray = Camera.main.ScreenPointToRay(Vector3.forward);
-            // RaycastHit hitInfo;
-
-
-
-            // AddButton.gameObject.SetActive(true);
-
-
             // Raycast against the location the player touched to search for planes.
 
             TrackableHit hit;
             TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon;
 
-
-            if (chosenPrefab && Frame.Raycast(Screen.width / 2, Screen.height / 2, raycastFilter, out hit))
+            if (chosenPrefab && Frame.Raycast(gesture.StartPosition.x, gesture.StartPosition.y, raycastFilter, out hit))
             {
+                // Use hit pose and camera pose to check if hit test is from the
+                // back of the plane, if it is, no need to create the anchor.
                 if ((hit.Trackable is DetectedPlane) &&
                     Vector3.Dot(FirstPersonCamera.transform.position - hit.Pose.position,
                         hit.Pose.rotation * Vector3.up) < 0)
@@ -106,74 +99,108 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 }
                 else
                 {
-                    if (PawnPrefab != null)
-                    {
-                        DetectedPlane detectedPlane = hit.Trackable as DetectedPlane;
-                        Pose pos = detectedPlane.CenterPose;
+                    // Instantiate Andy model at the hit pose.
+                    var andyObject = Instantiate(PawnPrefab, hit.Pose.position, hit.Pose.rotation);
 
-                        var gameObject = Instantiate(PawnPrefab, pos.position, pos.rotation);
-                        // gameObject.transform.position += new Vector3(0, gameObject.transform.localScale.y / 2, 0);
+                    // Instantiate manipulator.
+                    var manipulator = Instantiate(ManipulatorPrefab, hit.Pose.position, hit.Pose.rotation);
 
-                        // Instantiate manipulator.
-                        var manipulator =
-                            Instantiate(ManipulatorPrefab, pos.position, pos.rotation);
+                    // Make Andy model a child of the manipulator.
+                    andyObject.transform.parent = manipulator.transform;
 
-                        // Make game object a child of the manipulator.
-                        gameObject.transform.parent = manipulator.transform;
+                    // Create an anchor to allow ARCore to track the hitpoint as understanding of the physical
+                    // world evolves.
+                    var anchor = hit.Trackable.CreateAnchor(hit.Pose);
 
-                        // Create an anchor to allow ARCore to track the hitpoint as understanding of
-                        // the physical world evolves.
-                        var anchor = hit.Trackable.CreateAnchor(pos);
+                    // Make manipulator a child of the anchor.
+                    manipulator.transform.parent = anchor.transform;
 
-                        // Make manipulator a child of the anchor.
-                        manipulator.transform.parent = anchor.transform;
+                    // Select the placed object.
+                    manipulator.GetComponent<Manipulator>().Select();
 
-                        // Select the placed object.
-                        manipulator.GetComponent<Manipulator>().Select();
-
-                        chosenPrefab = false;
-                    }
-
-
+                    chosenPrefab = false;
                 }
-
             }
 
 
-            // if ((hit.Trackable is DetectedPlane) &&
-            //     Vector3.Dot(FirstPersonCamera.transform.position - hit.Pose.position,
-            //         hit.Pose.rotation * Vector3.up) < 0)
+            // if (chosenPrefab && Frame.Raycast(Screen.width / 2, Screen.height / 2, raycastFilter, out hit))
             // {
-            //     Debug.Log("Hit at back of the current DetectedPlane");
-            // }
-            // else
-            // {
+            //     if ((hit.Trackable is DetectedPlane) &&
+            //         Vector3.Dot(FirstPersonCamera.transform.position - hit.Pose.position,
+            //             hit.Pose.rotation * Vector3.up) < 0)
+            //     {
+            //         Debug.Log("Hit at back of the current DetectedPlane");
+            //     }
+            //     else
+            //     {
+            //         if (PawnPrefab != null)
+            //         {
 
-            //     // Instantiate game object at the hit pose.
-            //     var gameObject = Instantiate(PawnPrefab, hit.Pose.position, hit.Pose.rotation);
+            //             DetectedPlane detectedPlane = hit.Trackable as DetectedPlane;
+            //             Pose pos = detectedPlane.CenterPose;
 
-            //     // Instantiate manipulator.
-            //     var manipulator =
-            //         Instantiate(ManipulatorPrefab, hit.Pose.position, hit.Pose.rotation);
+            //             var gameObject = Instantiate(PawnPrefab, pos.position, pos.rotation);
 
-            //     // Make game object a child of the manipulator.
-            //     gameObject.transform.parent = manipulator.transform;
+            //             // Instantiate manipulator.
+            //             var manipulator =
+            //                 Instantiate(ManipulatorPrefab, pos.position, pos.rotation);
 
-            //     // Create an anchor to allow ARCore to track the hitpoint as understanding of
-            //     // the physical world evolves.
-            //     var anchor = hit.Trackable.CreateAnchor(hit.Pose);
+            //             // Make game object a child of the manipulator.
+            //             gameObject.transform.parent = manipulator.transform;
 
-            //     // Make manipulator a child of the anchor.
-            //     manipulator.transform.parent = anchor.transform;
+            //             // Create an anchor to allow ARCore to track the hitpoint as understanding of
+            //             // the physical world evolves.
+            //             var anchor = hit.Trackable.CreateAnchor(pos);
 
-            //     // Select the placed object.
-            //     manipulator.GetComponent<Manipulator>().Select();
+            //             // Make manipulator a child of the anchor.
+            //             manipulator.transform.parent = anchor.transform;
 
-            //     chosenPrefab = false;
-            // }
-            //334}
+            //             // Select the placed object.
+            //             manipulator.GetComponent<Manipulator>().Select();
+
+            //             chosenPrefab = false;
+            //         }
+
+
+            //     }
 
         }
 
+
+        // if ((hit.Trackable is DetectedPlane) &&
+        //     Vector3.Dot(FirstPersonCamera.transform.position - hit.Pose.position,
+        //         hit.Pose.rotation * Vector3.up) < 0)
+        // {
+        //     Debug.Log("Hit at back of the current DetectedPlane");
+        // }
+        // else
+        // {
+
+        //     // Instantiate game object at the hit pose.
+        //     var gameObject = Instantiate(PawnPrefab, hit.Pose.position, hit.Pose.rotation);
+
+        //     // Instantiate manipulator.
+        //     var manipulator =
+        //         Instantiate(ManipulatorPrefab, hit.Pose.position, hit.Pose.rotation);
+
+        //     // Make game object a child of the manipulator.
+        //     gameObject.transform.parent = manipulator.transform;
+
+        //     // Create an anchor to allow ARCore to track the hitpoint as understanding of
+        //     // the physical world evolves.
+        //     var anchor = hit.Trackable.CreateAnchor(hit.Pose);
+
+        //     // Make manipulator a child of the anchor.
+        //     manipulator.transform.parent = anchor.transform;
+
+        //     // Select the placed object.
+        //     manipulator.GetComponent<Manipulator>().Select();
+
+        //     chosenPrefab = false;
+        // }
+        //334}
+
     }
+
 }
+

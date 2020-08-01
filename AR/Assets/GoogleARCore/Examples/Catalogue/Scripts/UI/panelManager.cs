@@ -72,8 +72,8 @@ public class panelManager : MonoBehaviour
 
     public void closePanel()
     {
-        currPanel.SetActive(false);
         deleteData();
+        currPanel.SetActive(false);
         panelStack.Pop();
     }
 
@@ -120,7 +120,7 @@ public class panelManager : MonoBehaviour
             case "mainMenu":
                 break;
             case "FavouritePanel":
-            case "CategoriesPanel":
+            case "CatagoriesPanal":
                 currPanel.GetComponent<ProductLayout>().clearProducts();
                 break;
             case "DetailsMenu":

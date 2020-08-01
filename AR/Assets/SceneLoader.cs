@@ -3,26 +3,29 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Firebase.Auth;
+using TMPro;
 
 public class SceneLoader : MonoBehaviour
 {
 
     public GameObject loadingScreen;
-    public Sprite[] frames;
-    public Slider slider;
+    // public Sprite[] frames;
+    // public Slider slider;
     private FirebaseAuth auth;
     private bool loggedIn = false;
-    public Image explosion;
+    // public Image explosion;
     public float frameRate = 0.0f;
-    private int currentImage;
+    public GameObject image;
+    public GameObject precentage;
 
 
     private void Start()
     {
         Debug.Log("start Scene Loader");
         auth = FirebaseAuth.DefaultInstance;
-        currentImage = 0;
-        InvokeRepeating("ChangeImage", 0.0f, frameRate);
+        // currentImage = 0;
+        // InvokeRepeating("ChangeImage", 0.0f, frameRate);
+        // ChangeImage();
     }
 
     private void Update()
@@ -37,18 +40,12 @@ public class SceneLoader : MonoBehaviour
             loggedIn = true;
         }
     }
-    void ChangeImage()
-    {
-        if (currentImage == frames.Length - 1)
-        {
-            currentImage = -1;
-
-            // CancelInvoke("ChangeImage");
-            // Destroy(explosion);
-        }
-        currentImage += 1;
-        explosion.sprite = frames[currentImage];
-    }
+    // void ChangeImage()
+    // {
+    //     Debug.Log("Invoked");
+    //     LeanTween.scale(image, new Vector3(0, 0, 0), 2);
+    //     LeanTween.scale(image, new Vector3(1, 1, 1), 2);
+    // }
     public void onClickSignInAnonymously()
     {
         Debug.Log("onClickSignInAnonymously");
@@ -89,7 +86,7 @@ public class SceneLoader : MonoBehaviour
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            slider.value = progress;
+            precentage.GetComponent<TMPro.TextMeshProUGUI>().text = progress * 100 + "%";
             Debug.Log(progress);
             yield return null;
         }

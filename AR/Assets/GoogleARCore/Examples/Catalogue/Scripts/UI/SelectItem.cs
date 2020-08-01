@@ -50,14 +50,15 @@ public class SelectItem : MonoBehaviour
     public void createButton(Dictionary<string, object> product)
     {
         var name = product["name"].ToString();
-
+        var price = product["price"].ToString() + " EGP";
         GameObject card = Instantiate(button) as GameObject;
         Sprite cardImage = card.GetComponentsInChildren<Image>()[1].sprite;
         cardImage = Resources.Load<Sprite>("img1") as Sprite;
         card.transform.SetParent(thisCanvas.transform, false);
         card.transform.SetParent(panel.transform);
         card.name = name;
-        card.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
+        card.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[0].text = name;
+        card.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[1].text = price;
 
         GameObject emptyProduct = new GameObject();
         Product p = emptyProduct.AddComponent<Product>() as Product;

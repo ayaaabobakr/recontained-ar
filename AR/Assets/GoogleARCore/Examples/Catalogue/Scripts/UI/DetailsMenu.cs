@@ -4,17 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using Firebase.Auth;
 using Firebase.Firestore;
-using System;
-using Firebase.Extensions;
-
+using TMPro;
 
 public class DetailsMenu : MonoBehaviour
 {
     public GameObject panel;
+    public GameObject panel2;
     public Product product;
     public GameObject image;
     public GameObject colorPanel;
     public GameObject ViewInSpace;
+    public TextMeshProUGUI decription;
+    public TextMeshProUGUI dimension;
+    public TextMeshProUGUI materials;
     public List<GameObject> garbage;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -30,7 +32,7 @@ public class DetailsMenu : MonoBehaviour
     }
     public IEnumerator Loadpage(Product product)
     {
-        // clearPanel();
+        clearPanel();
 
         this.product = product;
         this.product.colorPanel = colorPanel;
@@ -44,7 +46,8 @@ public class DetailsMenu : MonoBehaviour
         addObj.product = product;
 
 
-        panel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.name;
+        panel.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[0].text = this.product.name;
+        panel.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[1].text = this.product.price + " EGP";
         string color = this.product.color;
 
         if (product.colorImages == null || product.colorImages.Length == 0)
@@ -56,6 +59,9 @@ public class DetailsMenu : MonoBehaviour
         {
             setColorPanel();
         }
+        decription.GetComponent<TMPro.TextMeshProUGUI>().text = this.product.description;
+        dimension.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.dimensions;
+        materials.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.material;
 
         if (this.product.image != null)
         {
@@ -66,7 +72,6 @@ public class DetailsMenu : MonoBehaviour
         image.GetComponent<Image>().sprite = this.product.getImageByColor(color);
 
     }
-
     public IEnumerator changeColor(string colorName)
     {
 
@@ -76,38 +81,34 @@ public class DetailsMenu : MonoBehaviour
             yield return null;
         }
         Debug.Log("I'am the different color, trying to change image");
+
+        decription.GetComponent<TMPro.TextMeshProUGUI>().text = this.product.colorDescription[colorName];
+        dimension.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.colorDimensions[colorName];
+        materials.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.colorMaterial[colorName];
         yield return StartCoroutine(product.setImageByColor(colorName));
         image.GetComponent<Image>().sprite = product.getImageByColor(colorName); ;
 
     }
-
     public void setColorPanel()
     {
-        Sprite[] images = this.product.colorImages;
-        for (int i = 0; i < images.Length; ++i)
+        string[] colorsHex = this.product.colorsHex;
+        for (int i = 0; i < colorsHex.Length; ++i)
         {
-            GameObject color = new GameObject();
-            Image colorImage = color.AddComponent<Image>();
-            colorImage.sprite = images[i];
-            colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
-            Button colorBtn = color.AddComponent<Button>();
-            color.GetComponent<Button>().onClick.AddListener(() =>
-                {
-                    Debug.Log(colorBtn.name);
-                });
-
+            this.product.createColorImages(colorsHex[i], i);
         }
     }
-
     public void clearPanel()
     {
         product = null;
         garbage?.ForEach(Destroy);
-
+        RectTransform myRectTransform = panel2.GetComponent<RectTransform>();
+        myRectTransform.localPosition = Vector3.zero;
+        myRectTransform.anchoredPosition = Vector3.zero;
         var colors = colorPanel.GetComponentsInChildren<Image>();
-        for (int i = 1; i < colors.Length; ++i)
+        for (int i = 0; i < colors.Length; ++i)
         {
             Destroy(colors[i].gameObject);
         }
+
     }
 }

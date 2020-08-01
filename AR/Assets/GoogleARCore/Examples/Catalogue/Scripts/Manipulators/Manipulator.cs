@@ -50,6 +50,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             }
         }
 
+
         /// <summary>
         /// Whether this game object is the Selected Object.
         /// </summary>

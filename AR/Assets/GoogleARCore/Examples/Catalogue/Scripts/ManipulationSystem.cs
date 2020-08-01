@@ -68,6 +68,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return s_Instance;
             }
         }
+        public void Delete()
+        {
+            if (Instance)
+            {
+                Destroy(SelectedObject.gameObject);
+            }
+        }
 
         /// <summary>
         /// Gets the Drag gesture recognizer.
@@ -181,4 +188,5 @@ namespace GoogleARCore.Examples.ObjectManipulation
             SelectedObject = target;
         }
     }
+
 }

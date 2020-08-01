@@ -13,6 +13,14 @@ public class Product : MonoBehaviour
     public int categoryID { get; set; }
     public int productID { get; set; }
     public GameObject prefab;
+    public float price;
+    public string description;
+    public string dimensions;
+    public string material;
+
+    public Dictionary<string, string> colorDescription;
+    public Dictionary<string, string> colorDimensions;
+    public Dictionary<string, string> colorMaterial;
     public Sprite image;
     public string color { get; set; }
     public string mainColor;
@@ -26,41 +34,28 @@ public class Product : MonoBehaviour
     private Dictionary<string, Sprite> imageMap;
     private Dictionary<string, GameObject> prefabMap;
     private FirebaseFirestore db;
-    private string[] colors;
+    public string[] colors;
     private Dictionary<string, string> imageUrlMap;
     private Dictionary<string, string> prefabUrlMap;
     private Dictionary<string, string> colorUrlMap;
     private Dictionary<string, string> colorHex;
+    public string[] colorsHex;
 
     private void Start()
     {
         db = FirebaseFirestore.DefaultInstance;
     }
 
-    public void createProduct(Dictionary<string, object> product)
-    {
-        this.name = product["name"].ToString();
-        this.color = product["color"].ToString();
-        this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString();
-        this.highQualityImageUrl = product["highQualityImageUrl"].ToString();
-        this.prefabUrl = product["prefabUrl"].ToString();
-        this.categoryID = int.Parse(product["categoryID"].ToString());
-        this.productID = int.Parse(product["ID"].ToString());
-        this.colorHex = new Dictionary<string, string>();
-        this.colorUrlMap = new Dictionary<string, string>();
-        this.imageUrlMap = new Dictionary<string, string>();
-        this.prefabUrlMap = new Dictionary<string, string>();
-        this.imageMap = new Dictionary<string, Sprite>();
-        this.prefabMap = new Dictionary<string, GameObject>();
-        this.imageUrlMap.Add(this.color, this.highQualityImageUrl);
-        this.prefabUrlMap.Add(this.color, this.prefabUrl);
-
-    }
-
     public void createProduct(Dictionary<string, object> product, GameObject card)
     {
         this.name = product["name"].ToString();
         this.color = product["color"].ToString();
+        this.price = float.Parse(product["price"].ToString());
+
+        this.description = product["description"].ToString();
+        this.dimensions = product["dimensions"].ToString();
+        this.material = product["material"].ToString();
+
         this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString();
         this.highQualityImageUrl = product["highQualityImageUrl"].ToString();
         this.prefabUrl = product["prefabUrl"].ToString();
@@ -70,62 +65,24 @@ public class Product : MonoBehaviour
         this.colorUrlMap = new Dictionary<string, string>();
         this.imageUrlMap = new Dictionary<string, string>();
         this.prefabUrlMap = new Dictionary<string, string>();
+        this.colorDescription = new Dictionary<string, string>();
+        this.colorDimensions = new Dictionary<string, string>();
+        this.colorMaterial = new Dictionary<string, string>();
         this.imageMap = new Dictionary<string, Sprite>();
         this.prefabMap = new Dictionary<string, GameObject>();
         this.imageUrlMap.Add(this.color, this.highQualityImageUrl);
         this.prefabUrlMap.Add(this.color, this.prefabUrl);
+
+        this.colorDescription.Add(this.color, description);
+        this.colorDimensions.Add(this.color, dimensions);
+        this.colorMaterial.Add(this.color, material);
+
         this.mainColor = this.color;
         this.card = card;
         toggle = gameObject.AddComponent<Toggle>();
         toggle.isOn = true;
         toggle.interactable = false;
-    }
 
-    public void createProduct(Product product)
-    {
-        this.name = product.name;
-        this.color = product.color;
-        // this.lowQualityImageUrl = product.lowQualityImageUrl;
-        // this.highQualityImageUrl = product.highQualityImageUrl;
-        this.prefabUrl = product.prefabUrl;
-        this.categoryID = product.categoryID;
-        this.productID = product.productID;
-        this.colorHex = new Dictionary<string, string>();
-        this.colorUrlMap = new Dictionary<string, string>();
-        this.imageUrlMap = new Dictionary<string, string>();
-        this.prefabUrlMap = new Dictionary<string, string>();
-        this.imageMap = new Dictionary<string, Sprite>();
-        this.prefabMap = new Dictionary<string, GameObject>();
-        // this.imageUrlMap.Add(this.color, this.imageUrl);
-        // this.prefabUrlMap.Add(this.color, this.prefabUrl);
-        this.mainColor = this.color;
-        toggle = gameObject.AddComponent<Toggle>();
-        toggle.isOn = true;
-        toggle.interactable = false;
-    }
-
-    public void createProduct(Product product, GameObject card)
-    {
-        this.name = product.name;
-        this.color = product.color;
-        // this.lowQualityImageUrl = product.lowQualityImageUrl;
-        // this.highQualityImageUrl = product.highQualityImageUrl;
-        this.prefabUrl = product.prefabUrl;
-        this.categoryID = product.categoryID;
-        this.productID = product.productID;
-        this.colorHex = new Dictionary<string, string>();
-        this.colorUrlMap = new Dictionary<string, string>();
-        this.imageUrlMap = new Dictionary<string, string>();
-        this.prefabUrlMap = new Dictionary<string, string>();
-        this.imageMap = new Dictionary<string, Sprite>();
-        this.prefabMap = new Dictionary<string, GameObject>();
-        // this.imageUrlMap.Add(this.color, this.imageUrl);
-        // this.prefabUrlMap.Add(this.color, this.prefabUrl);
-        this.mainColor = this.color;
-        this.card = card;
-        toggle = gameObject.AddComponent<Toggle>();
-        toggle.isOn = true;
-        toggle.interactable = false;
     }
 
     public void getColors()
@@ -137,6 +94,7 @@ public class Product : MonoBehaviour
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
             this.colors = new string[allcategoriesQuerySnapshot.Count];
             colorImages = new Sprite[allcategoriesQuerySnapshot.Count];
+            colorsHex = new string[allcategoriesQuerySnapshot.Count];
 
             Debug.Log("number of colors are " + allcategoriesQuerySnapshot.Count);
 
@@ -145,10 +103,15 @@ public class Product : MonoBehaviour
                 Dictionary<string, object> product = documentSnapshot.ToDictionary();
                 this.colors[cnt] = product["color"].ToString();
                 this.colorHex.Add(colors[cnt], product["colorHex"].ToString());
+
                 if (this.color != colors[cnt])
                 {
                     this.imageUrlMap.Add(colors[cnt], product["highQualityImageUrl"].ToString());
                     this.prefabUrlMap.Add(colors[cnt], product["prefabUrl"].ToString());
+                    this.colorDescription.Add(colors[cnt], product["description"].ToString());
+                    this.colorDimensions.Add(colors[cnt], product["dimensions"].ToString());
+                    this.colorMaterial.Add(colors[cnt], product["material"].ToString());
+
                 }
                 else
                 {
@@ -191,8 +154,7 @@ public class Product : MonoBehaviour
         {
             colorImage.color = colorRBG;
         }
-
-        colorImages[cnt] = colorImage.sprite;
+        colorsHex[cnt] = colorHex;
         colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
 
         Toggle colorToggle = colorCard.AddComponent<Toggle>();

@@ -39,6 +39,7 @@ public class ProductLayout : MonoBehaviour
 
     public void setProduct()
     {
+        // clearProducts();
         Debug.Log("I am in set Product");
 
         foreach (DocumentSnapshot documentSnapshot in data.Documents)
@@ -53,13 +54,15 @@ public class ProductLayout : MonoBehaviour
     {
 
         var name = product["name"].ToString();
+        var price = product["price"].ToString() + " EGP";
         GameObject card = Instantiate(cardBtn) as GameObject;
         Sprite cardImage = card.GetComponentsInChildren<Image>()[1].sprite;
         cardImage = Resources.Load<Sprite>("img1") as Sprite;
         card.transform.SetParent(canvas.transform, false);
         card.transform.SetParent(panel.transform);
         card.name = name;
-        card.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = name;
+        card.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[0].text = name;
+        card.GetComponentsInChildren<TMPro.TextMeshProUGUI>()[1].text = price;
 
         garbage.Add(card);
 
@@ -87,8 +90,9 @@ public class ProductLayout : MonoBehaviour
         card.GetComponentInChildren<Button>().onClick.AddListener(() =>
            {
                panelManager.currPanel = DetailMenu;
-               panelManager.openPanel();
                panelManager.setData(p);
+               panelManager.openPanel();
+
            });
 
         StartCoroutine(p.setCardImage());
@@ -117,6 +121,9 @@ public class ProductLayout : MonoBehaviour
     {
         garbage?.ForEach(Destroy);
         var products = panel.GetComponentsInChildren<Button>();
+        RectTransform myRectTransform = panel.GetComponent<RectTransform>();
+        myRectTransform.localPosition = Vector3.zero;
+        myRectTransform.anchoredPosition = Vector3.zero;
         likes.Clear();
         foreach (var product in products)
         {
