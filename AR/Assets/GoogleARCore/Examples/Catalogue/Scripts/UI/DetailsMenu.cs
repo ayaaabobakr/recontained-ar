@@ -30,6 +30,7 @@ public class DetailsMenu : MonoBehaviour
         userID = auth.CurrentUser.UserId;
 
     }
+
     public IEnumerator Loadpage(Product product)
     {
         clearPanel();
@@ -59,9 +60,17 @@ public class DetailsMenu : MonoBehaviour
         {
             setColorPanel();
         }
-        decription.GetComponent<TMPro.TextMeshProUGUI>().text = this.product.description;
-        dimension.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.dimensions;
-        materials.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.material;
+        decription.GetComponent<TMPro.TextMeshProUGUI>().text = this.product.description + " ";
+        decription.GetComponent<TMPro.TextMeshProUGUI>().text += " ";
+        decription.gameObject.SetActive(true);
+
+        dimension.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.dimensions + " ";
+        dimension.GetComponentInChildren<TMPro.TextMeshProUGUI>().text += " ";
+        dimension.gameObject.SetActive(true);
+
+        materials.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.product.material + " ";
+        materials.GetComponentInChildren<TMPro.TextMeshProUGUI>().text += " ";
+        materials.gameObject.SetActive(true);
 
         if (this.product.image != null)
         {
