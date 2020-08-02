@@ -1,19 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!65 &65432170287833054
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4736695156309874175}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &4736695156309777917
+--- !u!1001 &5513849357385248491
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -22,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100354, guid: 601aad6a679486b4280baa42cad67f45, type: 3}
       propertyPath: m_Name
-      value: Table8 Wood Variant
+      value: Decoration8 Wood
       objectReference: {fileID: 0}
     - target: {fileID: 400354, guid: 601aad6a679486b4280baa42cad67f45, type: 3}
       propertyPath: m_LocalPosition.x
@@ -70,9 +57,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 601aad6a679486b4280baa42cad67f45, type: 3}
---- !u!1 &4736695156309874175 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100354, guid: 601aad6a679486b4280baa42cad67f45,
-    type: 3}
-  m_PrefabInstance: {fileID: 4736695156309777917}
-  m_PrefabAsset: {fileID: 0}
