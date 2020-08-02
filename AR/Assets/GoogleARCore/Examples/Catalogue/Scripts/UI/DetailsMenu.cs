@@ -43,6 +43,7 @@ public class DetailsMenu : MonoBehaviour
         addToFavourite.toggle = addToFavourite.gameObject.GetComponent<Toggle>();
         addToFavourite.isLiked();
 
+        ViewInSpace.GetComponent<Button>().interactable = true;
         AddObject addObj = ViewInSpace.GetComponent<AddObject>();
         addObj.product = product;
 
