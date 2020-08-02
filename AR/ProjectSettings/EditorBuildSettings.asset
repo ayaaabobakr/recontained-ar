@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GoogleARCore/Examples/Catalogue/Scenes/Catalogue.unity
     guid: 9dba7e74f4d2b410f90b920f80528d44
+  - enabled: 1
+    path: Assets/GoogleARCore/Examples/Catalogue/Scenes/Gallery.unity
+    guid: 5365940c9cd2e1041a5935dbc473a58d
   m_configObjects: {}
