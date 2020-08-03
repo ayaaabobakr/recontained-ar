@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7460301597621788379}
   - component: {fileID: 4611002589725892212}
   m_Layer: 5
-  m_Name: TMP SubMeshUI [Roboto-Medium Atlas Material + LiberationSans SDF Atlas]
+  m_Name: TMP SubMeshUI [Roboto-Light Atlas Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,16 +326,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: Product Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 63f63948e04ac6c41a44215b2cfb06c6, type: 2}
-  m_sharedMaterial: {fileID: 21040792562383740, guid: 63f63948e04ac6c41a44215b2cfb06c6,
+  m_fontAsset: {fileID: 11400000, guid: 460bbc043da41714697b7cf631b9b5d5, type: 2}
+  m_sharedMaterial: {fileID: 21680509638536844, guid: 460bbc043da41714697b7cf631b9b5d5,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4286611584
-  m_fontColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+    rgba: 4281348144
+  m_fontColor: {r: 0.1882353, g: 0.1882353, b: 0.1882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -555,8 +555,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 300 EGP
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a192e0463e4588542a88ce7006a2f0d4, type: 2}
-  m_sharedMaterial: {fileID: 21950455938803632, guid: a192e0463e4588542a88ce7006a2f0d4,
+  m_fontAsset: {fileID: 11400000, guid: 460bbc043da41714697b7cf631b9b5d5, type: 2}
+  m_sharedMaterial: {fileID: 21680509638536844, guid: 460bbc043da41714697b7cf631b9b5d5,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

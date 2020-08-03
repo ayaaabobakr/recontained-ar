@@ -301,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 17721893561485316, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_Name
-      value: TMP SubMeshUI [Roboto-Medium Atlas Material + LiberationSans SDF Atlas]
+      value: TMP SubMeshUI [Roboto-Light Atlas Material + LiberationSans SDF Atlas]
       objectReference: {fileID: 0}
     - target: {fileID: 2076624461524595282, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
@@ -442,13 +442,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 63f63948e04ac6c41a44215b2cfb06c6,
+      objectReference: {fileID: 11400000, guid: 460bbc043da41714697b7cf631b9b5d5,
         type: 2}
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 21040792562383740, guid: 63f63948e04ac6c41a44215b2cfb06c6,
+      objectReference: {fileID: 21680509638536844, guid: 460bbc043da41714697b7cf631b9b5d5,
         type: 2}
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
@@ -458,22 +458,22 @@ PrefabInstance:
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_fontColor.r
-      value: 0.5019608
+      value: 0.1882353
       objectReference: {fileID: 0}
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_fontColor.g
-      value: 0.5019608
+      value: 0.1882353
       objectReference: {fileID: 0}
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_fontColor.b
-      value: 0.5019608
+      value: 0.1882353
       objectReference: {fileID: 0}
     - target: {fileID: 2076624462394738650, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4286611584
+      value: 4281348144
       objectReference: {fileID: 0}
     - target: {fileID: 2076624462394738653, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
@@ -520,6 +520,38 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4278222848
       objectReference: {fileID: 0}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_text
+      value: EGP 300.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 460bbc043da41714697b7cf631b9b5d5,
+        type: 2}
+    - target: {fileID: 3664880196135879255, guid: b7114bd9e63fe5942a091459ad09a933,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21680509638536844, guid: 460bbc043da41714697b7cf631b9b5d5,
+        type: 2}
     - target: {fileID: 4611002589725892212, guid: b7114bd9e63fe5942a091459ad09a933,
         type: 3}
       propertyPath: m_padding
