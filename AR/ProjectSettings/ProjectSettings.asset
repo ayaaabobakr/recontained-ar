@@ -644,7 +644,12 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: NATIVE_PLUGINS_LITE_VERSION;USES_SHARING
+    4: NATIVE_PLUGINS_LITE_VERSION;USES_SHARING
+    7: NATIVE_PLUGINS_LITE_VERSION;USES_SHARING
+    14: NATIVE_PLUGINS_LITE_VERSION;USES_SHARING
+    25: NATIVE_PLUGINS_LITE_VERSION;USES_SHARING
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
