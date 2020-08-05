@@ -57,18 +57,19 @@ public class ScreenshotPreview : MonoBehaviour {
 		}
 	}
 
+
 	public void ShareIt()
 	{
 		// Source code provided by Daniele Olivieri www.daniel4d.com
 		// Thanks to him very much)))
 
-		if(!Application.isEditor)
+		if (!Application.isEditor)
 		{
 			AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
 			AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
 			intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
 			AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
-			AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse","file://" + files [whichScreenShotIsShown]);
+			AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + files[whichScreenShotIsShown]);
 			intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
 			intentObject.Call<AndroidJavaObject>("setType", "image/jpeg");
 			AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
