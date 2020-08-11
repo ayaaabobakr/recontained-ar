@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class Product : MonoBehaviour {
+public class Product : MonoBehaviour
+{
     public GameObject DetailsMenu;
     public string name { get; set; }
     public int categoryID { get; set; }
@@ -41,207 +42,245 @@ public class Product : MonoBehaviour {
     private Dictionary<string, string> colorHex;
     public string[] colorsHex;
 
-    private void Start () {
+    private void Start()
+    {
         db = FirebaseFirestore.DefaultInstance;
     }
 
-    public void createProduct (Dictionary<string, object> product, GameObject card) {
-        this.name = product["name"].ToString ();
-        this.color = product["color"].ToString ();
-        
-        var x = decimal.Parse (product["price"].ToString ());
-        this.price = Math.Round ((decimal) x, 2);    
+    public void createProduct(Dictionary<string, object> product, GameObject card)
+    {
+        this.name = product["name"].ToString();
+        this.color = product["color"].ToString();
 
-        this.description = product["description"].ToString ();
-        this.dimensions = product["dimensions"].ToString ();
-        this.material = product["material"].ToString ();
+        var x = decimal.Parse(product["price"].ToString());
+        this.price = Math.Round((decimal)x, 2);
 
-        this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString ();
-        this.highQualityImageUrl = product["highQualityImageUrl"].ToString ();
-        this.prefabUrl = product["prefabUrl"].ToString ();
-        this.categoryID = int.Parse (product["categoryID"].ToString ());
-        this.productID = int.Parse (product["ID"].ToString ());
-        this.colorHex = new Dictionary<string, string> ();
-        this.colorUrlMap = new Dictionary<string, string> ();
-        this.imageUrlMap = new Dictionary<string, string> ();
-        this.prefabUrlMap = new Dictionary<string, string> ();
-        this.colorDescription = new Dictionary<string, string> ();
-        this.colorDimensions = new Dictionary<string, string> ();
-        this.colorMaterial = new Dictionary<string, string> ();
-        this.imageMap = new Dictionary<string, Sprite> ();
-        this.prefabMap = new Dictionary<string, GameObject> ();
-        this.imageUrlMap.Add (this.color, this.highQualityImageUrl);
-        this.prefabUrlMap.Add (this.color, this.prefabUrl);
+        this.description = product["description"].ToString();
+        this.dimensions = product["dimensions"].ToString();
+        this.material = product["material"].ToString();
 
-        this.colorDescription.Add (this.color, description);
-        this.colorDimensions.Add (this.color, dimensions);
-        this.colorMaterial.Add (this.color, material);
+        this.lowQualityImageUrl = product["lowQualityImageUrl"].ToString();
+        this.highQualityImageUrl = product["highQualityImageUrl"].ToString();
+        this.prefabUrl = product["prefabUrl"].ToString();
+        this.categoryID = int.Parse(product["categoryID"].ToString());
+        this.productID = int.Parse(product["ID"].ToString());
+        this.colorHex = new Dictionary<string, string>();
+        this.colorUrlMap = new Dictionary<string, string>();
+        this.imageUrlMap = new Dictionary<string, string>();
+        this.prefabUrlMap = new Dictionary<string, string>();
+        this.colorDescription = new Dictionary<string, string>();
+        this.colorDimensions = new Dictionary<string, string>();
+        this.colorMaterial = new Dictionary<string, string>();
+        this.imageMap = new Dictionary<string, Sprite>();
+        this.prefabMap = new Dictionary<string, GameObject>();
+        this.imageUrlMap.Add(this.color, this.highQualityImageUrl);
+        this.prefabUrlMap.Add(this.color, this.prefabUrl);
+
+        this.colorDescription.Add(this.color, description);
+        this.colorDimensions.Add(this.color, dimensions);
+        this.colorMaterial.Add(this.color, material);
 
         this.mainColor = this.color;
         this.card = card;
-        toggle = gameObject.AddComponent<Toggle> ();
+        toggle = gameObject.AddComponent<Toggle>();
         toggle.isOn = true;
         toggle.interactable = false;
 
     }
 
-    public void getColors () {
-        Query products = db.Collection ("ProductColor").WhereEqualTo ("ID", this.productID);
+    public void getColors()
+    {
+        Query products = db.Collection("ProductColor").WhereEqualTo("ID", this.productID);
         int cnt = 0;
-        products.GetSnapshotAsync ().ContinueWithOnMainThread (task => {
+        products.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
             QuerySnapshot allcategoriesQuerySnapshot = task.Result;
             this.colors = new string[allcategoriesQuerySnapshot.Count];
             colorImages = new Sprite[allcategoriesQuerySnapshot.Count];
             colorsHex = new string[allcategoriesQuerySnapshot.Count];
 
-            Debug.Log ("number of colors are " + allcategoriesQuerySnapshot.Count);
+            Debug.Log("number of colors are " + allcategoriesQuerySnapshot.Count);
 
-            foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents) {
-                Dictionary<string, object> product = documentSnapshot.ToDictionary ();
-                this.colors[cnt] = product["color"].ToString ();
-                this.colorHex.Add (colors[cnt], product["colorHex"].ToString ());
+            foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
+            {
+                Dictionary<string, object> product = documentSnapshot.ToDictionary();
+                this.colors[cnt] = product["color"].ToString();
+                this.colorHex.Add(colors[cnt], product["colorHex"].ToString());
 
-                if (this.color != colors[cnt]) {
-                    this.imageUrlMap.Add (colors[cnt], product["highQualityImageUrl"].ToString ());
-                    this.prefabUrlMap.Add (colors[cnt], product["prefabUrl"].ToString ());
-                    this.colorDescription.Add (colors[cnt], product["description"].ToString ());
-                    this.colorDimensions.Add (colors[cnt], product["dimensions"].ToString ());
-                    this.colorMaterial.Add (colors[cnt], product["material"].ToString ());
+                if (this.color != colors[cnt])
+                {
+                    this.imageUrlMap.Add(colors[cnt], product["highQualityImageUrl"].ToString());
+                    this.prefabUrlMap.Add(colors[cnt], product["prefabUrl"].ToString());
+                    this.colorDescription.Add(colors[cnt], product["description"].ToString());
+                    this.colorDimensions.Add(colors[cnt], product["dimensions"].ToString());
+                    this.colorMaterial.Add(colors[cnt], product["material"].ToString());
 
-                } else {
-                    setImageByColor (colors[cnt]);
                 }
-                Debug.Log ("Getting color by Hex");
-                createColorImages (this.colorHex[this.colors[cnt]], cnt++);
+                else
+                {
+                    setImageByColor(colors[cnt]);
+                }
+                Debug.Log("Getting color by Hex");
+                createColorImages(this.colorHex[this.colors[cnt]], cnt++);
             }
         });
     }
 
-    public IEnumerator setCardImage () {
+    public IEnumerator setCardImage()
+    {
 
         string url = this.lowQualityImageUrl;
-        UnityWebRequest wr = new UnityWebRequest (url);
-        DownloadHandlerTexture texDl = new DownloadHandlerTexture (true);
+        UnityWebRequest wr = new UnityWebRequest(url);
+        DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
         wr.downloadHandler = texDl;
-        yield return wr.SendWebRequest ();
-        if (!(wr.isNetworkError || wr.isHttpError)) {
+        yield return wr.SendWebRequest();
+        if (!(wr.isNetworkError || wr.isHttpError))
+        {
             Texture2D t = texDl.texture;
-            Sprite sprite = Sprite.Create (t, new Rect (0, 0, t.width, t.height), Vector2.zero, 1f);
+            Sprite sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
             this.image = sprite;
-            this.card.GetComponentsInChildren<Image> () [1].sprite = sprite;
-        } else {
-            Debug.Log ("www.error");
+            this.card.GetComponentsInChildren<Image>()[1].sprite = sprite;
+        }
+        else
+        {
+            Debug.Log("www.error");
         }
     }
 
-    public void createColorImages (string colorHex, int cnt) {
-        GameObject colorCard = new GameObject ();
+    public void createColorImages(string colorHex, int cnt)
+    {
+        GameObject colorCard = new GameObject();
         Color colorRBG;
-        Image colorImage = colorCard.AddComponent<Image> ();
+        Image colorImage = colorCard.AddComponent<Image>();
         // colorImage.rectTransform.sizeDelta = new Vector2(50, 50);ss
-        if (ColorUtility.TryParseHtmlString (colorHex, out colorRBG)) {
+        if (ColorUtility.TryParseHtmlString(colorHex, out colorRBG))
+        {
             colorImage.color = colorRBG;
         }
         colorsHex[cnt] = colorHex;
-        colorImage.GetComponent<RectTransform> ().SetParent (colorPanel.transform);
+        colorImage.GetComponent<RectTransform>().SetParent(colorPanel.transform);
 
-        Toggle colorToggle = colorCard.AddComponent<Toggle> ();
-        Outline colorOutline = colorCard.AddComponent<Outline> ();
-        colorOutline.effectDistance = new Vector2 (2, 2);
-        colorOutline.effectColor = new Color (0, 0, 0, 1);
-        colorToggle.group = colorPanel.GetComponent<ToggleGroup> ();
+        Toggle colorToggle = colorCard.AddComponent<Toggle>();
+        Outline colorOutline = colorCard.AddComponent<Outline>();
+        colorOutline.effectDistance = new Vector2(2, 2);
+        colorOutline.effectColor = new Color(0, 0, 0, 1);
+        colorToggle.group = colorPanel.GetComponent<ToggleGroup>();
         colorToggle.name = this.colors[cnt];
-        if (this.color == this.colors[cnt]) {
+        if (this.color == this.colors[cnt])
+        {
             colorOutline.enabled = true;
             colorToggle.isOn = true;
-        } else {
+        }
+        else
+        {
             colorOutline.enabled = false;
             colorToggle.isOn = false;
         }
 
-        colorToggle.onValueChanged.AddListener (delegate {
-            if (colorToggle.isOn) {
+        colorToggle.onValueChanged.AddListener(delegate
+        {
+            if (colorToggle.isOn)
+            {
                 colorOutline.enabled = true;
-                StartCoroutine (DetailsMenu.GetComponent<DetailsMenu> ().changeColor (colorToggle.name));
-            } else {
+                StartCoroutine(DetailsMenu.GetComponent<DetailsMenu>().changeColor(colorToggle.name));
+            }
+            else
+            {
                 colorOutline.enabled = false;
             }
         });
-        Debug.Log ("color image is Loaded");
+        Debug.Log("color image is Loaded");
 
     }
 
-    public IEnumerator setImageByColor (string colorName) {
-        Debug.Log ("I'am setting image by color");
-        if (this.imageMap.ContainsKey (colorName)) { yield break; }
+    public IEnumerator setImageByColor(string colorName)
+    {
+        Debug.Log("I'am setting image by color");
+        if (this.imageMap.ContainsKey(colorName)) { yield break; }
 
-        if (!imageUrlMap.ContainsKey (colorName)) { yield break; }
+        if (!imageUrlMap.ContainsKey(colorName)) { yield break; }
 
         string url = this.imageUrlMap[colorName];
-        UnityWebRequest wr = new UnityWebRequest (url);
-        DownloadHandlerTexture texDl = new DownloadHandlerTexture (true);
+        UnityWebRequest wr = new UnityWebRequest(url);
+        DownloadHandlerTexture texDl = new DownloadHandlerTexture(true);
         wr.downloadHandler = texDl;
-        yield return wr.SendWebRequest ();
-        if (!(wr.isNetworkError || wr.isHttpError)) {
+        yield return wr.SendWebRequest();
+        if (!(wr.isNetworkError || wr.isHttpError))
+        {
             Texture2D t = texDl.texture;
-            Sprite sprite = Sprite.Create (t, new Rect (0, 0, t.width, t.height), Vector2.zero, 1f);
-            if (this.mainColor == colorName) {
-                card.GetComponentsInChildren<Image> () [1].sprite = sprite;
+            Sprite sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), Vector2.zero, 1f);
+            if (this.mainColor == colorName)
+            {
+                card.GetComponentsInChildren<Image>()[1].sprite = sprite;
                 toggle.isOn = false;
             }
-            if (!imageMap.ContainsKey (colorName)) {
-                this.imageMap.Add (colorName, sprite);
+            if (!imageMap.ContainsKey(colorName))
+            {
+                this.imageMap.Add(colorName, sprite);
             }
-            Debug.Log ("Color is loaded" + colorName);
-        } else {
-            Debug.Log ("www.error");
+            Debug.Log("Color is loaded" + colorName);
+        }
+        else
+        {
+            Debug.Log("www.error");
         }
     }
 
-    public Sprite getImageByColor (string colorName) {
+    public Sprite getImageByColor(string colorName)
+    {
         this.color = colorName;
-        if (this.imageMap.ContainsKey (colorName)) {
-            Debug.Log ("The image is currently in the map");
+        if (this.imageMap.ContainsKey(colorName))
+        {
+            Debug.Log("The image is currently in the map");
             return this.imageMap[colorName];
         }
         return image;
     }
 
-    public IEnumerator setPrefabByColor (string colorName) {
+    public IEnumerator setPrefabByColor(string colorName)
+    {
 
-        if (this.prefabMap.ContainsKey (colorName)) { yield break; }
+        if (this.prefabMap.ContainsKey(colorName)) { yield break; }
 
-        if (!prefabUrlMap.ContainsKey (colorName)) {
-            Debug.Log ("the prefab url is not here");
+        if (!prefabUrlMap.ContainsKey(colorName))
+        {
+            Debug.Log("the prefab url is not here");
             yield break;
         }
 
         string url = this.prefabUrlMap[colorName];
-        WWW www = new WWW (url);
+        WWW www = new WWW(url);
         yield return www;
         AssetBundle bundle = www.assetBundle;
 
-        if (www.error == null) {
-            if (!prefabMap.ContainsKey (colorName)) {
-                Debug.Log ("Prefab is loaded");
+        if (www.error == null)
+        {
+            if (!prefabMap.ContainsKey(colorName))
+            {
+                Debug.Log("Prefab is loaded");
                 string prefabName = this.name + this.productID + " " + colorName;
-                Debug.Log (prefabName);
-                this.prefab = (GameObject) bundle.LoadAsset (prefabName);
-                this.prefabMap.Add (colorName, this.prefab);
+                Debug.Log(prefabName);
+                this.prefab = (GameObject)bundle.LoadAsset(prefabName);
+                this.prefabMap.Add(colorName, this.prefab);
             }
 
-            if (this.prefab.GetComponent<BoxCollider> () == null) {
-                this.prefab.AddComponent<BoxCollider> ();
+            if (this.prefab.GetComponent<BoxCollider>() == null)
+            {
+                this.prefab.AddComponent<BoxCollider>();
             }
-        } else {
-            Debug.Log ("www.error");
+        }
+        else
+        {
+            Debug.Log("www.error");
         }
 
     }
 
-    public GameObject getPrefabByColor (string colorName) {
-        if (this.prefabMap.ContainsKey (colorName)) {
-            Debug.Log ("The prefab is currently in the map");
+    public GameObject getPrefabByColor(string colorName)
+    {
+        if (this.prefabMap.ContainsKey(colorName))
+        {
+            Debug.Log("The prefab is currently in the map");
             return this.prefabMap[colorName];
         }
         return null;

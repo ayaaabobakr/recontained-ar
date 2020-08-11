@@ -11,9 +11,12 @@ public class DataManager : MonoBehaviour
     public GameObject categoryPanel;
 
     public GameObject FavouritePanel;
+    public GameObject loadingPanel;
+    public GameObject FavouriteButton;
     private FirebaseFirestore db;
     private panelManager panelManager;
     private FirebaseAuth auth;
+
 
     void Start()
     {
@@ -37,6 +40,8 @@ public class DataManager : MonoBehaviour
                 panelManager.setPanel(categoryPanel);
                 panelManager.openPanel();
                 categoryPanel.GetComponent<ProductLayout>().setProduct();
+                btn.interactable = true;
+                loadingPanel.SetActive(false);
 
 
             }
@@ -44,6 +49,7 @@ public class DataManager : MonoBehaviour
             {
                 Debug.Log("is canceled or is fault");
                 // Error Panel Required;
+                loadingPanel.SetActive(false);
             }
 
         });
@@ -59,13 +65,16 @@ public class DataManager : MonoBehaviour
         {
             if (task.IsCompleted)
             {
+
                 QuerySnapshot allcategoriesQuerySnapshot = task.Result;
                 if (allcategoriesQuerySnapshot.Count == 0)
                 {
                     panelManager.setPanel(FavouritePanel);
                     panelManager.openPanel();
+                    FavouriteButton.GetComponent<Button>().interactable = true;
                     return;
                 }
+                FavouriteButton.GetComponent<Button>().interactable = true;
                 foreach (DocumentSnapshot documentSnapshot in allcategoriesQuerySnapshot.Documents)
                 {
 
@@ -100,6 +109,7 @@ public class DataManager : MonoBehaviour
                 Debug.Log("task.Result.Count" + task.Result.Count);
                 FavouritePanel.GetComponent<ProductLayout>().data = task.Result;
                 panelManager.setPanel(FavouritePanel);
+
                 panelManager.openPanel();
                 FavouritePanel.GetComponent<ProductLayout>().setProduct();
                 Debug.Log("is completed");

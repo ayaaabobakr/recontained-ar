@@ -99,11 +99,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 }
                 else
                 {
+                    var rot = hit.Pose.rotation;
+                    rot = Quaternion.Euler(new Vector3(rot.x, 180, rot.z));
                     // Instantiate Andy model at the hit pose.
-                    var andyObject = Instantiate(PawnPrefab, hit.Pose.position, hit.Pose.rotation);
+                    var andyObject = Instantiate(PawnPrefab, hit.Pose.position, rot);
 
                     // Instantiate manipulator.
-                    var manipulator = Instantiate(ManipulatorPrefab, hit.Pose.position, hit.Pose.rotation);
+                    var manipulator = Instantiate(ManipulatorPrefab, hit.Pose.position, rot);
 
                     // Make Andy model a child of the manipulator.
                     andyObject.transform.parent = manipulator.transform;

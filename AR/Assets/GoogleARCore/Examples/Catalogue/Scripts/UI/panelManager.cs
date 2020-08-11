@@ -120,7 +120,7 @@ public class panelManager : MonoBehaviour
             case "mainMenu":
                 break;
             case "FavouritePanel":
-            case "CatagoriesPanal":
+            case "CategoriesPanel":
                 currPanel.GetComponent<ProductLayout>().clearProducts();
                 break;
             case "DetailsMenu":

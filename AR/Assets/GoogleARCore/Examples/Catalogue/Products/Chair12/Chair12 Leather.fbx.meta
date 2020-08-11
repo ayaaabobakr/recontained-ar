@@ -21,7 +21,6 @@ ModelImporter:
     100030: group_8
     100032: group_8.001
     100034: group_9
-    100036: Light
     400000: //RootNode
     400002: group_1
     400004: group_10
@@ -40,7 +39,6 @@ ModelImporter:
     400030: group_8
     400032: group_8.001
     400034: group_9
-    400036: Light
     2100000: Color_008
     2100002: material
     2100004: _155801_2
@@ -91,7 +89,6 @@ ModelImporter:
     4300024: group_6.001
     4300026: group_7.001
     4300028: group_8.001
-    10800000: Light
   externalObjects: {}
   materials:
     importMaterials: 1
